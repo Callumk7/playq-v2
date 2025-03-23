@@ -2,7 +2,8 @@
 //                           IGDB TYPESCRIPT SDK
 ////////////////////////////////////////////////////////////////////////////////
 
-import { IGDBGameSchema } from "~/schema/igdb";
+import { env } from "~/lib/env";
+import { GameSearchResultSchema, IGDBGameSchema } from "~/schema/igdb";
 
 const IGDB_BASE_URL = "https://api.igdb.com/v4";
 
@@ -16,11 +17,11 @@ export class IGDBClient {
 		this.accessToken = accessToken;
 	}
 
-	games(preset: "full" | "default" = "default"): QueryBuilder {
+	games(preset: "full" | "default" | "complete" | "none" = "default"): QueryBuilder {
 		return new QueryBuilder().selectPreset(preset);
 	}
 
-	async execute(endpoint: string, queryBuilder: QueryBuilder): Promise<unknown[]> {
+	async execute<T>(endpoint: string, queryBuilder: QueryBuilder): Promise<T> {
 		const query = queryBuilder.build();
 		const response = await fetch(`${this.baseUrl}/${endpoint}`, {
 			method: "POST",
@@ -34,8 +35,6 @@ export class IGDBClient {
 		});
 
 		if (!response.ok) {
-			console.error(response.statusText);
-			console.error(await response.text());
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 
@@ -67,9 +66,13 @@ class QueryBuilder {
 			"rating",
 		],
 		default: ["name", "cover.image_id", "rating"],
+		complete: ["*, cover.image_id"],
+		none: [],
 	};
 
-	selectPreset(preset: "full" | "default" = "default"): QueryBuilder {
+	selectPreset(
+		preset: "full" | "default" | "complete" | "none" = "default",
+	): QueryBuilder {
 		this.fields = [...this.presetSelections[preset]];
 		return this;
 	}
@@ -134,18 +137,51 @@ class QueryBuilder {
 ////////////////////////////////////////////////////////////////////////////////
 
 const client = new IGDBClient(
-	process.env.IGDB_CLIENT_ID!,
-	process.env.IGDB_BEARER_TOKEN!,
+	env.IGDB_CLIENT_ID,
+	env.IGDB_BEARER_TOKEN,
 );
 export async function getTopRatedRecentGames() {
-	const games = await client.execute(
+	const games = await client.execute<unknown[]>(
+		"games",
+		client
+			.games("default")
+			.select("rating_count", "first_release_date")
+			.where("rating_count >= 150")
+			.where("parent_game = null")
+			.sort("rating", "desc")
+			.limit(100),
+	);
+
+	// TODO: There is no error handling for responses in an incorrect state
+	const parsedResults = [];
+	for (const game of games) {
+		const result = GameSearchResultSchema.safeParse(game);
+		if (result.success) {
+			parsedResults.push(result.data);
+		}
+	}
+
+	return parsedResults;
+}
+
+export async function getSearchResults(query: string | null, page: string | null) {
+	const limit = 25;
+	let offset: number | null = null;
+
+	if (page === null) {
+		offset = 0;
+	} else {
+		offset = Number(page) * limit;
+	}
+
+	const games = await client.execute<unknown[]>(
 		"games",
 		client
 			.games("full")
-			.where("release_dates.y >= 2015")
-			.where("aggregated_rating_count >= 20")
-			.sort("aggregated_rating", "desc")
-			.limit(30),
+			.where("cover != null")
+			.search(query)
+			.limit(limit)
+			.offset(offset),
 	);
 
 	const parsedResults = [];
@@ -159,4 +195,6 @@ export async function getTopRatedRecentGames() {
 	return parsedResults;
 }
 
-
+export function getFullGame(gameId: number) {
+	return client.execute("games", client.games("complete").where(`id = ${gameId}`));
+}

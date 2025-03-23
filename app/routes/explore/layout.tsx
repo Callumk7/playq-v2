@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
 
+// TODO: Currently surplus to requirements, maybe remove
 export default function ExploreLayout() {
-    return (
-        <div className="bg-red-300">
-            <h2>YES BOYS</h2>
-            <Outlet />
-        </div>
-    )
+	return (
+		<div className="space-y-2">
+			<Outlet />
+		</div>
+	);
 }
