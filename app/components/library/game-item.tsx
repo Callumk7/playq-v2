@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
-import { MusicIcon, SaveIcon, Trash } from "lucide-react";
-import { useFetcher } from "react-router";
+import { CogIcon, MusicIcon, SaveIcon, Trash } from "lucide-react";
+import { Link, useFetcher } from "react-router";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,18 +9,22 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
+
 interface CoverImageProps {
 	imageId: string;
 	className?: string;
 }
+// This component simply renders the image cover art that we retrieve from IGDB
 export function CoverImage({ imageId, className }: CoverImageProps) {
 	const size = "720p";
 	return (
-		<img
-			src={`https://images.igdb.com/igdb/image/upload/t_${size}/${imageId}.jpg`}
-			alt="game cover art"
-			className={cn(className, "h-fit w-full")}
-		/>
+    <div className="rounded-md overflow-hidden h-fit w-full">
+      <img
+        src={`https://images.igdb.com/igdb/image/upload/t_${size}/${imageId}.jpg`}
+        alt="game cover art"
+        className={cn(className, "h-fit w-full")}
+      />
+    </div>
 	);
 }
 
@@ -71,7 +75,7 @@ export function CollectionGame({
 	playlists,
 }: CollectionGameProps) {
 	return (
-		<div className="hover:bg-slate-100 p-2 h-full rounded-md">
+		<Link to={`/games/${gameId}`} className="hover:bg-slate-100 p-2 h-full rounded-md">
 			{coverId ? <CoverImage imageId={coverId} /> : <PlaceholderImage />}
 			<div className="w-full flex justify-between py-2">
 				<p className="text-sm">{name}</p>
@@ -80,9 +84,12 @@ export function CollectionGame({
 					<Button size={"icon"}>
 						<Trash />
 					</Button>
+					<Button size={"icon"}>
+						<CogIcon />
+					</Button>
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }
 
