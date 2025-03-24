@@ -43,6 +43,21 @@ const exploreData = [
       url: "/explore/people",
       icon: MapIcon,
     },
+    {
+      name: "Top Rated",
+      url: "/explore/top-rated",
+      icon: MapIcon,
+    },
+    {
+      name: "Most Played",
+      url: "/explore/most-played",
+      icon: MapIcon,
+    },
+    {
+      name: "Hyped",
+      url: "/explore/hyped",
+      icon: MapIcon,
+    },
   ]
 
 export function NavExplore() {

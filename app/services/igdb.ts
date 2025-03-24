@@ -136,10 +136,7 @@ class QueryBuilder {
 //                                Static Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-const client = new IGDBClient(
-	env.IGDB_CLIENT_ID,
-	env.IGDB_BEARER_TOKEN,
-);
+const client = new IGDBClient(env.IGDB_CLIENT_ID, env.IGDB_BEARER_TOKEN);
 export async function getTopRatedRecentGames() {
 	const games = await client.execute<unknown[]>(
 		"games",
@@ -177,8 +174,7 @@ export async function getSearchResults(query: string | null, page: string | null
 	const games = await client.execute<unknown[]>(
 		"games",
 		client
-			.games("full")
-			.where("cover != null")
+			.games("default")
 			.search(query)
 			.limit(limit)
 			.offset(offset),
@@ -195,6 +191,17 @@ export async function getSearchResults(query: string | null, page: string | null
 	return parsedResults;
 }
 
-export function getFullGame(gameId: number) {
-	return client.execute("games", client.games("complete").where(`id = ${gameId}`));
+export async function getFullGame(gameId: number) {
+	const results = await client.execute<unknown[]>(
+		"games",
+		client.games("complete").where(`id = ${gameId}`),
+	);
+
+	const result = IGDBGameSchema.safeParse(results[0]);
+
+	if (result.success) {
+		return result.data;
+	}
+
+	throw new Error("Failed to parse game");
 }

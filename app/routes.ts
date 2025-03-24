@@ -9,6 +9,9 @@ export default [
 			route("explore", "./routes/explore/layout.tsx", [
 				route("games", "./routes/explore/games.tsx"),
 				route("playlists", "./routes/explore/playlists.tsx"),
+				route("top-rated", "./routes/explore/top-rated.tsx"),
+				route("most-played", "./routes/explore/most-played.tsx"),
+				route("hyped", "./routes/explore/hyped.tsx"),
 			]),
 			...prefix("collection", [
 				route("games", "./routes/collection/games.tsx"),
@@ -16,7 +19,8 @@ export default [
 					index("./routes/collection/playlists/index.tsx"),
 					route(":playlistId", "./routes/collection/playlists/playlist.tsx"),
 				])
-			])
+			]),
+			route("games/:gameId", "./routes/games/game.tsx"),
 		]),
 	]),
 	...prefix("api", [

@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight, GamepadIcon, MusicIcon, type LucideIcon } from "lucide-react"
+import { useMemo } from "react"
 import { Link } from "react-router"
 
 import {
@@ -18,21 +19,35 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar"
+import type { Playlist } from "~/db/queries/playlist"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+export function NavCollection({playlists}: {playlists: Playlist[]}) {
+  const items = useMemo(() => {
+    return [
+      {
+        title: "Playlists",
+        url: "/collection/playlists",
+        icon: MusicIcon,
+        isActive: true,
+        items: playlists.map((playlist) => ({
+          title: playlist.name,
+          url: `/collection/playlists/${playlist.id}`,
+        })),
+      },
+      {
+        title: "Games",
+        url: "/collection/games",
+        icon: GamepadIcon,
+        isActive: false,
+        items: [
+          {
+            title: "My Games",
+            url: "/collection/games",
+          }
+        ],
+      }
+    ]
+  }, [playlists])
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Collection</SidebarGroupLabel>
