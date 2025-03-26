@@ -2,12 +2,12 @@ import { getSearchResults, getTopRatedRecentGames } from "~/services/igdb";
 import type { Route } from "./+types/games";
 import { ExploreGameSearch } from "~/components/explore/search";
 import { LibraryView } from "~/components/library/library-view";
-import { ExploreGame } from "~/components/library/game-item";
 import { LocalCache } from "~/lib/cache";
 import { calculateWeightedRating } from "~/lib/weighted-rating";
 import { validateAndMapGame } from "~/services/database-sync";
 import { db } from "~/db";
 import { games, type GamesInsert } from "~/db/schema/games";
+import { ExploreGame } from "~/components/library/explore-game-item";
 
 function getSearchParams(urlString: string) {
 	const url = new URL(urlString);
@@ -94,4 +94,8 @@ export default function ExploreGamesPage({ loaderData }: Route.ComponentProps) {
 			</LibraryView>
 		</div>
 	);
+}
+
+export const handle = {
+  breadcrumb: "Games"
 }

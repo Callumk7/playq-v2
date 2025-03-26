@@ -1,3 +1,5 @@
+CREATE TYPE "public"."privacy_setting" AS ENUM('PUBLIC', 'FRIENDS_ONLY', 'LINK_SHARING', 'PRIVATE');--> statement-breakpoint
+CREATE TYPE "public"."role" AS ENUM('OWNER', 'EDITOR', 'COLLABORATOR', 'VIEWER');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -124,13 +126,24 @@ CREATE TABLE "games_to_playlists" (
 	CONSTRAINT "games_to_playlists_game_id_playlist_id_pk" PRIMARY KEY("game_id","playlist_id")
 );
 --> statement-breakpoint
+CREATE TABLE "playlist_permissions" (
+	"permission_id" uuid DEFAULT gen_random_uuid(),
+	"playlist_id" uuid,
+	"user_id" text,
+	"created_at" timestamp NOT NULL,
+	"updated_at" timestamp NOT NULL,
+	"granted_at" timestamp NOT NULL,
+	"granted_by" text NOT NULL,
+	"roleType" "role"
+);
+--> statement-breakpoint
 CREATE TABLE "playlists" (
-	"id" uuid PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"creator_id" text NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
-	"is_private" boolean DEFAULT true NOT NULL
+	"privacySetting" "privacy_setting" DEFAULT 'PRIVATE'
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -139,4 +152,6 @@ ALTER TABLE "users_to_games" ADD CONSTRAINT "users_to_games_user_id_user_id_fk" 
 ALTER TABLE "users_to_games" ADD CONSTRAINT "users_to_games_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_to_playlists" ADD CONSTRAINT "games_to_playlists_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_to_playlists" ADD CONSTRAINT "games_to_playlists_playlist_id_playlists_id_fk" FOREIGN KEY ("playlist_id") REFERENCES "public"."playlists"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "playlist_permissions" ADD CONSTRAINT "playlist_permissions_playlist_id_playlists_id_fk" FOREIGN KEY ("playlist_id") REFERENCES "public"."playlists"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "playlist_permissions" ADD CONSTRAINT "playlist_permissions_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "playlists" ADD CONSTRAINT "playlists_creator_id_user_id_fk" FOREIGN KEY ("creator_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;

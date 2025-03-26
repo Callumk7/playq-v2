@@ -1,4 +1,4 @@
-import { Outlet, type LoaderFunctionArgs } from "react-router";
+import { Link, Outlet, useMatches, type LoaderFunctionArgs, type UIMatch } from "react-router";
 import { AppSidebar } from "~/components/app-sidebar";
 import {
 	Breadcrumb,
@@ -15,35 +15,52 @@ import { useSession } from "~/lib/auth/auth-client";
 import { getAndValidateSession } from "~/lib/auth/helpers";
 import type { Route } from "./+types/base-layout";
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
-  const session = await getAndValidateSession(request);
-  const userPlaylists = await getPlaylists(session.user.id);
-  return userPlaylists;
-}
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const session = await getAndValidateSession(request);
+	const userPlaylists = await getPlaylists(session.user.id);
+	return userPlaylists;
+};
 
 // TODO: Implement breadcrumbs
 // TODO: proper log out
 
-export default function BaseLayout({loaderData}: Route.ComponentProps) {
-  const userPlaylists = loaderData;
-  const session = useSession();
+export default function BaseLayout({ loaderData }: Route.ComponentProps) {
+	const userPlaylists = loaderData;
+	const session = useSession();
+
+	const matches = useMatches() as UIMatch<unknown, { breadcrumb: string } | undefined>[];
+	console.log(matches);
 	return (
 		<SidebarProvider>
 			<AppSidebar playlists={userPlaylists} />
 			<SidebarInset>
 				<header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4">
 					<SidebarTrigger className="-ml-1" />
-          <span className="text-sm">{session?.user.id}</span>
+					<span className="text-sm">{session?.user.id}</span>
 					<Separator orientation="vertical" className="mr-2 h-4" />
 					<Breadcrumb>
 						<BreadcrumbList>
-							<BreadcrumbItem className="hidden md:block">
-								<BreadcrumbLink href="#">Building Your Application</BreadcrumbLink>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator className="hidden md:block" />
-							<BreadcrumbItem>
-								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-							</BreadcrumbItem>
+							{matches.map((match, i) => {
+								if (match.pathname === "/") return null;
+								return (
+                  <>
+                    {match.handle?.breadcrumb ? (
+                      <>
+                        <BreadcrumbItem key={match.pathname} className="hidden md:block">
+                          <BreadcrumbLink asChild>
+                            <Link to={match.pathname}>
+                              {match.handle.breadcrumb}
+                            </Link>
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        {i !== matches.length - 1 && (
+                          <BreadcrumbSeparator className="hidden md:block" />
+                        )}
+                      </>
+                    ) : null}
+                  </>
+								);
+							})}
 						</BreadcrumbList>
 					</Breadcrumb>
 				</header>

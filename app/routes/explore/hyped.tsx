@@ -5,3 +5,8 @@ export default function ExploreHypedPage() {
     </div>
   )
 }
+
+export const handle = {
+  breadcrumb: "Hyped"
+}
+

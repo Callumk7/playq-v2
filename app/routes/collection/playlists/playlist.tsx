@@ -1,10 +1,17 @@
 import { getAndValidateSession } from "~/lib/auth/helpers";
-import { getGamesInPlaylist, getPlaylistById } from "~/db/queries/playlist";
+import {
+	addGamesToPlaylist,
+	deletePlaylist,
+	getGamesInPlaylist,
+	getPlaylistById,
+} from "~/db/queries/playlist";
 import { redirect } from "react-router";
 import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/playlist";
-import { CollectionGame } from "~/components/library/game-item";
 import { MainLayout } from "~/components/layout/main";
+import { PlaylistMenu } from "./components/playlist-menu";
+import { CollectionGame } from "~/components/library/collection-game-item";
+import { parseForm, zx } from "zodix";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -14,16 +21,41 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	}
 
 	const playlist = await getPlaylistById(playlistId);
+
+	if (!playlist) {
+		throw redirect("/collection/playlists");
+	}
+
+	if (playlist.creatorId !== session.user.id) {
+		throw redirect("/collection/playlists");
+	}
+
 	const playlistGames = await getGamesInPlaylist(playlistId);
 
 	return { playlist, playlistGames };
+};
+
+// TODO: Authorisation on this delete action
+export const action = async ({ request, params }: Route.ActionArgs) => {
+	const { playlistId } = params;
+	if (request.method === "POST") {
+		const { gameId } = await parseForm(request, {
+			gameId: zx.NumAsString,
+		});
+		return await addGamesToPlaylist(playlistId, [gameId]);
+	}
+	if (request.method === "DELETE") {
+		return await deletePlaylist(playlistId);
+	}
+
+	return null;
 };
 
 export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 	const { playlist, playlistGames } = loaderData;
 	return (
 		<MainLayout>
-			<h2 className="text-2xl font-bold">{playlist.name}</h2>
+			<PlaylistMenu playlistId={playlist.id} />
 			<LibraryView>
 				{playlistGames?.map((game) => (
 					<CollectionGame
@@ -38,3 +70,7 @@ export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 		</MainLayout>
 	);
 }
+
+export const handle = {
+	breadcrumb: "Playlist",
+};

@@ -17,7 +17,7 @@ export class IGDBClient {
 		this.accessToken = accessToken;
 	}
 
-	games(preset: "full" | "default" | "complete" | "none" = "default"): QueryBuilder {
+	games(preset: "full" | "default" | "complete" | "none" | "fullGame" = "default"): QueryBuilder {
 		return new QueryBuilder().selectPreset(preset);
 	}
 
@@ -65,13 +65,22 @@ class QueryBuilder {
 			"involved_companies",
 			"rating",
 		],
-		default: ["name", "cover.image_id", "rating"],
+		default: ["name", "cover.image_id", "rating", "first_release_date"],
 		complete: ["*, cover.image_id"],
 		none: [],
+		fullGame: [
+			"*",
+			"artworks.image_id",
+			"screenshots.image_id",
+			"cover.image_id",
+			"genres.name",
+			"external_games.*",
+			"related_games.*"
+		]
 	};
 
 	selectPreset(
-		preset: "full" | "default" | "complete" | "none" = "default",
+		preset: "full" | "default" | "complete" | "none" | "fullGame" = "default",
 	): QueryBuilder {
 		this.fields = [...this.presetSelections[preset]];
 		return this;
@@ -137,6 +146,7 @@ class QueryBuilder {
 ////////////////////////////////////////////////////////////////////////////////
 
 const client = new IGDBClient(env.IGDB_CLIENT_ID, env.IGDB_BEARER_TOKEN);
+
 export async function getTopRatedRecentGames() {
 	const games = await client.execute<unknown[]>(
 		"games",
@@ -194,7 +204,7 @@ export async function getSearchResults(query: string | null, page: string | null
 export async function getFullGame(gameId: number) {
 	const results = await client.execute<unknown[]>(
 		"games",
-		client.games("complete").where(`id = ${gameId}`),
+		client.games("fullGame").where(`id = ${gameId}`),
 	);
 
 	const result = IGDBGameSchema.safeParse(results[0]);

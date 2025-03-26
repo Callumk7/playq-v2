@@ -20,3 +20,7 @@ export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps
 		</div>
 	);
 }
+
+export const handle = {
+  breadcrumb: "Top Rated"
+}

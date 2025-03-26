@@ -13,7 +13,7 @@ export default [
 				route("most-played", "./routes/explore/most-played.tsx"),
 				route("hyped", "./routes/explore/hyped.tsx"),
 			]),
-			...prefix("collection", [
+			route("collection", "./routes/collection/layout.tsx", [
 				route("games", "./routes/collection/games.tsx"),
 				route("playlists", "./routes/collection/playlists/layout.tsx", [
 					index("./routes/collection/playlists/index.tsx"),

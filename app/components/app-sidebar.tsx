@@ -19,11 +19,6 @@ import type { Playlist } from "~/db/queries/playlist"
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -57,7 +52,7 @@ export function AppSidebar({playlists, ...props }: SidebarProps) {
         <NavExplore />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

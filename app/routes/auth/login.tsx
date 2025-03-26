@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, useNavigate } from "react-router";
 import { authClient } from "~/lib/auth/auth-client";
+import { AuthContainer } from "./components/container";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ export default function LoginPage() {
 					navigate("/");
 				},
 				onError: (ctx) => {
-          setIsLoading(false);
+					setIsLoading(false);
 					alert(JSON.stringify(ctx.error));
 				},
 			},
@@ -31,9 +32,8 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="w-4/5 mx-auto space-y-2">
-			<h2>Sign In</h2>
-      {isLoading && <p>Loading...</p>}
+		<AuthContainer>
+			{isLoading && <p>Loading...</p>}
 			<Form onSubmit={signIn} className="border p-4 rounded-md flex flex-col gap-2">
 				<label htmlFor="email">Email</label>
 				<input
@@ -51,6 +51,6 @@ export default function LoginPage() {
 				/>
 				<button type="submit">Sign In</button>
 			</Form>
-		</div>
+		</AuthContainer>
 	);
 }

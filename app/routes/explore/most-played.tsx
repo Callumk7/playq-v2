@@ -5,3 +5,7 @@ export default function ExploreMostPlayedPage() {
     </div>
   )
 }
+
+export const handle = {
+  breadcrumb: "Most Played"
+}

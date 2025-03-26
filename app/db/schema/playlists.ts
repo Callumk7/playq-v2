@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
-	boolean,
 	integer,
+	pgEnum,
 	pgTable,
 	primaryKey,
 	text,
@@ -11,6 +11,8 @@ import {
 import { user } from "./auth";
 import { games } from "./games";
 
+export const privacySettingEnum = pgEnum("privacy_setting", ["PUBLIC", "FRIENDS_ONLY", "LINK_SHARING", "PRIVATE"]);
+
 export const playlists = pgTable("playlists", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	name: text("name").notNull(),
@@ -19,7 +21,7 @@ export const playlists = pgTable("playlists", {
 		.references(() => user.id),
 	createdAt: timestamp("created_at", { mode: "date" }).notNull(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).notNull(),
-	isPrivate: boolean("is_private").notNull().default(true),
+	privacySetting: privacySettingEnum().default("PRIVATE")
 });
 
 export const playlistsRelations = relations(playlists, ({ one, many }) => ({
@@ -53,3 +55,27 @@ export const gamesToPlaylistsRelations = relations(gamesToPlaylists, ({ one }) =
 		references: [playlists.id],
 	}),
 }));
+
+export const roleEnum = pgEnum("role", ["OWNER", "EDITOR", "COLLABORATOR", "VIEWER"]);
+
+export const playlistPermissions = pgTable("playlist_permissions", {
+	permissionId: uuid("permission_id").defaultRandom(),
+	playlistId: uuid("playlist_id").references(() => playlists.id),
+	userId: text("user_id").references(() => user.id),
+	createdAt: timestamp("created_at", { mode: "date" }).notNull(),
+	updatedAt: timestamp("updated_at", { mode: "date" }).notNull(),
+	grantedAt: timestamp("granted_at", { mode: "date" }).notNull(),
+	grantedBy: text("granted_by").notNull(),
+	roleType: roleEnum()
+})
+
+export const playlistPermissionsRelations = relations(playlistPermissions, ({one}) => ({
+	playlist: one(playlists, {
+		fields: [playlistPermissions.playlistId],
+		references: [playlists.id],
+	}),
+	user: one(user, {
+		fields: [playlistPermissions.userId],
+		references: [user.id],
+	})
+}))

@@ -157,9 +157,9 @@ export async function deletePlaylist(id: string): Promise<boolean> {
   
   // Then delete the playlist
   const result = await db.delete(playlists)
-    .where(eq(playlists.id, id));
+    .where(eq(playlists.id, id)).returning();
   
-  return result.count > 0;
+  return result.length > 0;
 }
 
 // Add games to a playlist

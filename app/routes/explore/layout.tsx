@@ -1,4 +1,5 @@
 import { Outlet } from "react-router";
+import { Breadcrumb } from "~/components/ui/breadcrumb";
 
 // TODO: Currently surplus to requirements, maybe remove
 export default function ExploreLayout() {
@@ -7,4 +8,8 @@ export default function ExploreLayout() {
 			<Outlet />
 		</div>
 	);
+}
+
+export const handle = {
+  breadcrumb: "Explore"
 }

@@ -1,89 +1,113 @@
-"use client"
-
-import { ChevronRight, GamepadIcon, MusicIcon, type LucideIcon } from "lucide-react"
-import { useMemo } from "react"
-import { Link } from "react-router"
+"use client";
 
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible"
+	ChevronRight,
+	Folder,
+	Forward,
+	FrameIcon,
+	GamepadIcon,
+	MoreHorizontal,
+	MusicIcon,
+	PieChartIcon,
+	Trash2,
+	type LucideIcon,
+} from "lucide-react";
+import { useMemo } from "react";
+import { Link } from "react-router";
 import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "~/components/ui/sidebar"
-import type { Playlist } from "~/db/queries/playlist"
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuAction,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
+	useSidebar,
+} from "~/components/ui/sidebar";
+import type { Playlist } from "~/db/queries/playlist";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
-export function NavCollection({playlists}: {playlists: Playlist[]}) {
-  const items = useMemo(() => {
-    return [
-      {
-        title: "Playlists",
-        url: "/collection/playlists",
-        icon: MusicIcon,
-        isActive: true,
-        items: playlists.map((playlist) => ({
-          title: playlist.name,
-          url: `/collection/playlists/${playlist.id}`,
-        })),
-      },
-      {
-        title: "Games",
-        url: "/collection/games",
-        icon: GamepadIcon,
-        isActive: false,
-        items: [
-          {
-            title: "My Games",
-            url: "/collection/games",
-          }
-        ],
-      }
-    ]
-  }, [playlists])
-  return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Collection</SidebarGroupLabel>
-      <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link to={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
-  )
+export function NavCollection({ playlists }: { playlists: Playlist[] }) {
+	const { isMobile } = useSidebar();
+	const collectionItems = useMemo(() => [
+		{
+			name: "My Games",
+			url: "/collection/games",
+			icon: FrameIcon,
+      items: [],
+		},
+		{
+			name: "My Playlists",
+			url: "/collection/playlists",
+			icon: PieChartIcon,
+			items: playlists.map((playlist) => ({
+				title: playlist.name,
+				url: `/collection/playlists/${playlist.id}`,
+			})),
+		},
+	], [playlists]);
+
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Collection</SidebarGroupLabel>
+			<SidebarMenu>
+				{collectionItems.map((item) => (
+					<SidebarMenuItem key={item.name}>
+						<SidebarMenuButton asChild>
+							<Link to={item.url}>
+								<item.icon />
+								<span>{item.name}</span>
+							</Link>
+						</SidebarMenuButton>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<SidebarMenuAction showOnHover>
+									<MoreHorizontal />
+									<span className="sr-only">More</span>
+								</SidebarMenuAction>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								className="w-48 rounded-lg"
+								side={isMobile ? "bottom" : "right"}
+								align={isMobile ? "end" : "start"}
+							>
+								<DropdownMenuItem>
+									<Folder className="text-muted-foreground" />
+									<span>Create New Playlist</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Forward className="text-muted-foreground" />
+									<span>Share Playlist</span>
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem>
+									<Trash2 className="text-muted-foreground" />
+									<span>Delete Playlist</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<SidebarMenuSub>
+							{item.items?.map((subItem) => (
+								<SidebarMenuSubItem key={subItem.title}>
+									<SidebarMenuSubButton asChild>
+										<Link to={subItem.url}>
+											<span>{subItem.title}</span>
+										</Link>
+									</SidebarMenuSubButton>
+								</SidebarMenuSubItem>
+							))}
+						</SidebarMenuSub>
+					</SidebarMenuItem>
+				))}
+			</SidebarMenu>
+		</SidebarGroup>
+	);
 }

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "~/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -25,7 +25,7 @@ export function PlaylistTable({ playlists }: PlaylistTableProps) {
 				{playlists.map((playlist) => (
 					<TableRow key={playlist.id}>
 						<TableCell>
-							<Link to={playlist.id} className="text-sm text-blue-600">
+							<Link to={playlist.id}>
 								{playlist.name}
 							</Link>
 						</TableCell>
