@@ -1,6 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "~/components/ui/sheet";
 import type { Playlist } from "~/db/queries/playlist";
-import { CoverImage } from "../base-game-item";
 import { Checkbox } from "~/components/ui/checkbox";
 import type { GameWithPlaylistIds } from "~/db/queries/collection";
 import { useState } from "react";
@@ -29,14 +28,16 @@ export function GameSheet({
 				<SheetHeader>
 					<SheetTitle>{selectedGame.name}</SheetTitle>
 				</SheetHeader>
-				<div className="p-4">
-					{playlists.map((playlist) => (
-						<PlaylistCheckbox
-							key={playlist.id}
-							playlist={playlist}
-							selectedGamePlaylistIds={selectedGame.playlistIds}
-						/>
-					))}
+				<div className="p-4 space-y-4">
+          <h2 className="font-semibold text-xl">Playlists</h2>
+          {playlists.map((playlist) => (
+            <PlaylistCheckbox
+              key={playlist.id}
+              gameId={selectedGame.id}
+              playlist={playlist}
+              selectedGamePlaylistIds={selectedGame.playlistIds}
+            />
+          ))}
 				</div>
 			</SheetContent>
 		</Sheet>

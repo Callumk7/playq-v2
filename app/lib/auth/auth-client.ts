@@ -6,6 +6,6 @@ export const authClient = createAuthClient({
 
 export function useSession() {
 	const { data: session } = authClient.useSession();
-	return session!;
+	return session;
 }
 

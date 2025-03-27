@@ -1,17 +1,19 @@
 import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/games";
 import { getAndValidateSession } from "~/lib/auth/helpers";
-import { getUserGames, getUserGamesWithPlaylistIds, removeGameFromCollection } from "~/db/queries/collection";
+import {
+	getUserGamesWithPlaylistIds,
+	removeGameFromCollection,
+} from "~/db/queries/collection";
 import { getPlaylists } from "~/db/queries/playlist";
-import { useSearch } from "~/hooks/use-search";
 import { GameTable } from "~/components/library/table-view";
-import { Input } from "~/components/ui/input";
 import { CollectionMenubar } from "./components/collection-menubar";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
 import { z } from "zod";
 import { GameSheet } from "~/components/library/components/game-sheet";
 import { useCollectionStore } from "~/stores/games-collection-store";
+import { Input } from "~/components/ui/input";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -35,31 +37,22 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
-	const { searchTerm, setSearchTerm, searchedGames } = useSearch(userCollection);
-
-  console.log(userCollection[0])
 
 	const store = useCollectionStore();
 
 	return (
 		<div>
 			<div className="flex gap-2">
-				<Input
-					id="search"
-					value={searchTerm}
-					onInput={(e) => setSearchTerm(e.currentTarget.value)}
-					className="w-fit"
-				/>
+        <Input type="search" placeholder="Search" className="w-fit" />
 				<CollectionMenubar games={userCollection} />
 			</div>
 			<LibraryView>
-				{searchedGames?.map((game) => (
+				{userCollection?.map((game) => (
 					<CollectionGame
 						key={game.id}
 						gameId={game.id}
 						coverId={game.coverImageId}
 						name={game.name}
-						playlists={userPlaylists}
 					/>
 				))}
 			</LibraryView>

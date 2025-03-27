@@ -1,17 +1,14 @@
 import { Link, Outlet, useMatches, type LoaderFunctionArgs, type UIMatch } from "react-router";
 import { AppSidebar } from "~/components/app-sidebar";
 import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList, BreadcrumbSeparator
 } from "~/components/ui/breadcrumb";
 import { Separator } from "~/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
 import { getPlaylists } from "~/db/queries/playlist";
-import { useSession } from "~/lib/auth/auth-client";
 import { getAndValidateSession } from "~/lib/auth/helpers";
 import type { Route } from "./+types/base-layout";
 
@@ -26,7 +23,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function BaseLayout({ loaderData }: Route.ComponentProps) {
 	const userPlaylists = loaderData;
-	const session = useSession();
 
 	const matches = useMatches() as UIMatch<unknown, { breadcrumb: string } | undefined>[];
 	console.log(matches);
@@ -36,7 +32,6 @@ export default function BaseLayout({ loaderData }: Route.ComponentProps) {
 			<SidebarInset>
 				<header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4">
 					<SidebarTrigger className="-ml-1" />
-					<span className="text-sm">{session?.user.id}</span>
 					<Separator orientation="vertical" className="mr-2 h-4" />
 					<Breadcrumb>
 						<BreadcrumbList>

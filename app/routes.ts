@@ -26,7 +26,8 @@ export default [
 	...prefix("api", [
 		route("auth/*", "./routes/api/auth.ts"),
 		route("collection", "./routes/api/collection.ts"),
-		route("playlists", "./routes/api/playlists.ts")
+		route("playlists", "./routes/api/playlists.ts"),
+		route("playlists/:playlistId", "./routes/api/playlistGames.ts")
 	]),
 	route("auth/signup", "./routes/auth/signup.tsx"),
 	route("auth/login", "./routes/auth/login.tsx"),

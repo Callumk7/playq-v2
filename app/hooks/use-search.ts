@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface HasName {
-	name: string;
+  name: string;
 }
 
 export const useSearch = <G extends HasName>(games: G[]) => {
-	const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedGames, setSearchedGames] = useState<G[]>(games || []);
 
-	let output: G[] = [...games];
-	if (searchTerm !== "") {
-		output = output.filter((game) =>
-			game.name.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-	}
+  useEffect(() => {
+    let output: G[] = [...(games || [])];
+    if (searchTerm !== "") {
+      output = output.filter((game) =>
+        game.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    setSearchedGames(output);
+  }, [searchTerm, games]);
 
-	const searchedGames = output;
-
-	return {
-		searchedGames,
-		searchTerm,
-		setSearchTerm
-	};
+  return {
+    searchedGames,
+    searchTerm,
+    setSearchTerm
+  };
 };

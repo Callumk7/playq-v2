@@ -43,7 +43,7 @@ export const useRemoveGameFromPlaylist = (playlistId: string) => {
 			{ gameId },
 			{
 				method: "delete",
-				action: `/collection/playlists/${playlistId}`,
+				action: `/api/playlists/${playlistId}`,
 			},
 		);
 	};

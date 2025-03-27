@@ -3,7 +3,6 @@ import type { Route } from "./+types/games";
 import { ExploreGameSearch } from "~/components/explore/search";
 import { LibraryView } from "~/components/library/library-view";
 import { LocalCache } from "~/lib/cache";
-import { calculateWeightedRating } from "~/lib/weighted-rating";
 import { validateAndMapGame } from "~/services/database-sync";
 import { db } from "~/db";
 import { games, type GamesInsert } from "~/db/schema/games";
@@ -47,14 +46,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     await db.insert(games).values(parsedResults).onConflictDoNothing();
   }
 
-	const weightedGames = results.map((game) => ({
-		...game,
-		rating: calculateWeightedRating(game.rating!, game.rating_count!),
-	}));
-
-	weightedGames.sort((a, b) => b.rating - a.rating);
-
-	return weightedGames;
+	return results;
 };
 
 export const clientLoader = async ({ serverLoader, request }: Route.ClientLoaderArgs) => {
@@ -89,7 +81,7 @@ export default function ExploreGamesPage({ loaderData }: Route.ComponentProps) {
 			<ExploreGameSearch />
 			<LibraryView>
 				{games?.map((game) => (
-					<ExploreGame key={game.id} gameId={game.id} coverId={game.cover!.image_id} name={game.name} />
+					<ExploreGame key={game.id} gameId={game.id} coverId={game.cover ? game.cover.image_id : null} name={game.name} />
 				))}
 			</LibraryView>
 		</div>

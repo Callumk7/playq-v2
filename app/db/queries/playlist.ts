@@ -68,10 +68,10 @@ export async function getPlaylists(creatorId?: string, includePrivate = false): 
   } else if (!includePrivate) {
     // If not filtering by creator and not including private playlists,
     // only return public playlists
-    query = query.where(eq(playlists.isPrivate, false));
+    query = query.where(eq(playlists.privacySetting, "PUBLIC"));
   }
   
-  return await query;
+  return await query.then(result => result.sort((a, b) => a.name.localeCompare(b.name)));
 }
 
 // Get playlists with their games

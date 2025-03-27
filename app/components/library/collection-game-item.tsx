@@ -1,35 +1,21 @@
 import { Button } from "../ui/button";
-import { ChevronDownIcon, MenuIcon, Trash } from "lucide-react";
-import { useFetcher } from "react-router";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { Trash } from "lucide-react";
 import { CoverImage } from "./base-game-item";
 import { useDeleteGameFromCollection } from "~/db/hooks/collection";
 import { useSession } from "~/lib/auth/auth-client";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useCollectionStore } from "~/stores/games-collection-store";
 
 interface CollectionGameProps {
 	coverId: string | null;
 	name: string;
 	gameId: number;
-	playlists: PlaylistMenuItem[];
 }
-export function CollectionGame({
-	coverId,
-	name,
-	gameId,
-	playlists,
-}: CollectionGameProps) {
+export function CollectionGame({ coverId, name, gameId }: CollectionGameProps) {
 	const session = useSession();
 	const store = useCollectionStore();
 	const { handleDelete, isDeleting, isDeleted } = useDeleteGameFromCollection({
 		gameId,
-		userId: session.user.id,
+		userId: session ? session.user.id : "",
 	});
 
 	const handleDeleteClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,7 +25,18 @@ export function CollectionGame({
 	};
 
 	return (
-		<button type="button" onClick={() => store.selectGame(gameId)} className="hover:bg-muted p-2 h-full rounded-md group text-left">
+		<div
+			// biome-ignore lint/a11y/useSemanticElements: No nested buttons
+			role="button"
+			tabIndex={0}
+			onClick={() => store.selectGame(gameId)}
+			onKeyDown={(e) => {
+				if (e.key === "Enter") {
+					store.selectGame(gameId);
+				}
+			}}
+			className="hover:bg-muted p-2 h-full rounded-md group text-left"
+		>
 			<CoverImage
 				imageId={coverId}
 				className={isDeleting || isDeleted ? "transition-all blur-md duration-200" : ""}
@@ -52,64 +49,6 @@ export function CollectionGame({
 					</Button>
 				</div>
 			</div>
-		</button>
-	);
-}
-
-// Controls
-type PlaylistMenuItem = {
-	id: number;
-	name: string;
-};
-
-interface SaveToPlaylistProps {
-	gameId: number;
-	playlists: PlaylistMenuItem[];
-}
-export function SaveToPlaylist({ gameId, playlists }: SaveToPlaylistProps) {
-	const fetcher = useFetcher();
-
-	const handleSave = async (playlistId: number) => {
-		fetcher.submit({ playlistId, gameId }, { method: "POST", action: "/api/playlists" });
-	};
-
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button size="icon" disabled={playlists.length === 0}>
-					<ChevronDownIcon />
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent>
-				{playlists.map((playlist) => (
-					<DropdownMenuItem key={playlist.id} onClick={() => handleSave(playlist.id)}>
-						{playlist.name}
-					</DropdownMenuItem>
-				))}
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
-}
-
-interface CollectionItemControlsProps {
-	gameId: number;
-}
-
-function CollectionItemControls({ gameId }: CollectionItemControlsProps) {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button size="icon">
-					<MenuIcon />
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent>
-				<ToggleGroup type="single">
-					<ToggleGroupItem value="interested">Interested</ToggleGroupItem>
-					<ToggleGroupItem value="played">Played</ToggleGroupItem>
-					<ToggleGroupItem value="completed">Completed</ToggleGroupItem>
-				</ToggleGroup>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		</div>
 	);
 }
