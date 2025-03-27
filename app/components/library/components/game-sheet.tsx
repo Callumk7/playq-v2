@@ -1,43 +1,43 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "~/components/ui/sheet";
 import type { Playlist } from "~/db/queries/playlist";
 import { Checkbox } from "~/components/ui/checkbox";
-import type { GameWithPlaylistIds } from "~/db/queries/collection";
 import { useState } from "react";
 import { useAddGamesToPlaylist, useRemoveGameFromPlaylist } from "~/db/hooks/playlists";
+import { useCollectionStore } from "~/stores/games-collection-store";
+import { useGameCollectionLoaderData } from "~/routes/collection/games";
 
 interface GameSheetProps {
 	playlists: Playlist[];
-	selectedGame: GameWithPlaylistIds | undefined;
-	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
 }
 
-export function GameSheet({
-	playlists,
-	selectedGame,
-	isOpen,
-	setIsOpen,
-}: GameSheetProps) {
+export function GameSheet({ playlists }: GameSheetProps) {
+	const isGameSheetOpen = useCollectionStore((state) => state.isGameSheetOpen);
+	const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
+	const selectedGameId = useCollectionStore((state) => state.selectedGameId);
+
+	const { userCollection } = useGameCollectionLoaderData();
+	const selectedGame = userCollection.find((game) => game.id === selectedGameId);
+
 	if (!selectedGame) {
 		return null;
 	}
 
 	return (
-		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+		<Sheet open={isGameSheetOpen} onOpenChange={setIsGameSheetOpen}>
 			<SheetContent>
 				<SheetHeader>
 					<SheetTitle>{selectedGame.name}</SheetTitle>
 				</SheetHeader>
 				<div className="p-4 space-y-4">
-          <h2 className="font-semibold text-xl">Playlists</h2>
-          {playlists.map((playlist) => (
-            <PlaylistCheckbox
-              key={playlist.id}
-              gameId={selectedGame.id}
-              playlist={playlist}
-              selectedGamePlaylistIds={selectedGame.playlistIds}
-            />
-          ))}
+					<h2 className="font-semibold text-xl">Playlists</h2>
+					{playlists.map((playlist) => (
+						<PlaylistCheckbox
+							key={playlist.id}
+							gameId={selectedGame.id}
+							playlist={playlist}
+							selectedGamePlaylistIds={selectedGame.playlistIds}
+						/>
+					))}
 				</div>
 			</SheetContent>
 		</Sheet>

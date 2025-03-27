@@ -2,8 +2,8 @@ import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/games";
 import { getAndValidateSession } from "~/lib/auth/helpers";
 import {
-	getUserGamesWithPlaylistIds,
-	removeGameFromCollection,
+    getUserGamesWithPlaylistIds,
+    removeGameFromCollection,
 } from "~/db/queries/collection";
 import { getPlaylists } from "~/db/queries/playlist";
 import { GameTable } from "~/components/library/table-view";
@@ -12,8 +12,8 @@ import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
 import { z } from "zod";
 import { GameSheet } from "~/components/library/components/game-sheet";
-import { useCollectionStore } from "~/stores/games-collection-store";
 import { Input } from "~/components/ui/input";
+import { useRouteLoaderData } from "react-router";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -38,11 +38,6 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
 
-  // TODO: Move this extraction to the store module itself and import as a hook
-	const selectedGameId = useCollectionStore((state) => state.selectedGameId);
-  const isGameSheetOpen = useCollectionStore((state) => state.isGameSheetOpen);
-  const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
-
 	return (
 		<div>
 			<div className="flex gap-2">
@@ -61,10 +56,7 @@ export default function CollectionIndexPage({ loaderData }: Route.ComponentProps
 			</LibraryView>
 			<GameTable games={userCollection} />
 			<GameSheet
-				isOpen={isGameSheetOpen}
-				setIsOpen={setIsGameSheetOpen}
 				playlists={userPlaylists}
-				selectedGame={userCollection.find((game) => game.id === selectedGameId)}
 			/>
 		</div>
 	);
@@ -72,4 +64,15 @@ export default function CollectionIndexPage({ loaderData }: Route.ComponentProps
 
 export const handle = {
 	breadcrumb: "Games",
+};
+
+export const useGameCollectionLoaderData = () => {
+	const data = useRouteLoaderData<typeof loader>("collection");
+	if (!data) {
+		throw new Error(
+			"You must use the useGameCollectionLoaderData hook inside a route that uses the collection loader",
+		);
+	}
+
+	return data;
 };

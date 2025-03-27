@@ -14,11 +14,11 @@ export default [
 				route("hyped", "./routes/explore/hyped.tsx"),
 			]),
 			route("collection", "./routes/collection/layout.tsx", [
-				route("games", "./routes/collection/games.tsx"),
+				route("games", "./routes/collection/games.tsx", { id: "collection" }),
 				route("playlists", "./routes/collection/playlists/layout.tsx", [
 					index("./routes/collection/playlists/index.tsx"),
 					route(":playlistId", "./routes/collection/playlists/playlist.tsx"),
-				])
+				]),
 			]),
 			route("games/:gameId", "./routes/games/game.tsx"),
 		]),
@@ -27,7 +27,7 @@ export default [
 		route("auth/*", "./routes/api/auth.ts"),
 		route("collection", "./routes/api/collection.ts"),
 		route("playlists", "./routes/api/playlists.ts"),
-		route("playlists/:playlistId", "./routes/api/playlistGames.ts")
+		route("playlists/:playlistId", "./routes/api/playlistGames.ts"),
 	]),
 	route("auth/signup", "./routes/auth/signup.tsx"),
 	route("auth/login", "./routes/auth/login.tsx"),
