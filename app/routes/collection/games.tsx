@@ -38,12 +38,15 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
 
-	const store = useCollectionStore();
+  // TODO: Move this extraction to the store module itself and import as a hook
+	const selectedGameId = useCollectionStore((state) => state.selectedGameId);
+  const isGameSheetOpen = useCollectionStore((state) => state.isGameSheetOpen);
+  const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
 
 	return (
 		<div>
 			<div className="flex gap-2">
-        <Input type="search" placeholder="Search" className="w-fit" />
+				<Input type="search" placeholder="Search" className="w-fit" />
 				<CollectionMenubar games={userCollection} />
 			</div>
 			<LibraryView>
@@ -58,10 +61,10 @@ export default function CollectionIndexPage({ loaderData }: Route.ComponentProps
 			</LibraryView>
 			<GameTable games={userCollection} />
 			<GameSheet
-				isOpen={store.isGameSheetOpen}
-				setIsOpen={store.setIsGameSheetOpen}
+				isOpen={isGameSheetOpen}
+				setIsOpen={setIsGameSheetOpen}
 				playlists={userPlaylists}
-				selectedGame={userCollection.find((game) => game.id === store.selectedGameId)}
+				selectedGame={userCollection.find((game) => game.id === selectedGameId)}
 			/>
 		</div>
 	);
