@@ -1,39 +1,33 @@
 "use client";
 
 import {
-	ChevronRight,
-	Folder,
-	Forward,
-	FrameIcon,
-	GamepadIcon,
-	MoreHorizontal,
-	MusicIcon,
-	PieChartIcon,
-	Trash2,
-	type LucideIcon,
+    Folder,
+    Forward,
+    FrameIcon, MoreHorizontal, PieChartIcon,
+    Trash2
 } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router";
 import {
-	SidebarGroup,
-	SidebarGroupLabel,
-	SidebarMenu,
-	SidebarMenuAction,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem,
-	useSidebar,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuAction,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+    useSidebar,
 } from "~/components/ui/sidebar";
 import type { Playlist } from "~/db/queries/playlist";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 export function NavCollection({ playlists }: { playlists: Playlist[] }) {
 	const { isMobile } = useSidebar();

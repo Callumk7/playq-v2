@@ -1,5 +1,4 @@
 import { Link, Outlet, useMatches, type LoaderFunctionArgs, type UIMatch } from "react-router";
-import { AppSidebar } from "~/components/app-sidebar";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -11,6 +10,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/s
 import { getPlaylists } from "~/db/queries/playlist";
 import { getAndValidateSession } from "~/lib/auth/helpers";
 import type { Route } from "./+types/base-layout";
+import { AppSidebar } from "~/components/sidebar/app-sidebar";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const session = await getAndValidateSession(request);
