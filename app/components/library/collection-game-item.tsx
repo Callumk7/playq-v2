@@ -12,7 +12,14 @@ interface CollectionGameProps {
 }
 export function CollectionGame({ coverId, name, gameId }: CollectionGameProps) {
 	const session = useSession();
-	const store = useCollectionStore();
+  const setSelectedGameId = useCollectionStore((state) => state.setSelectedGameId);
+  const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
+
+  const handleSelectGame = () => {
+    setSelectedGameId(gameId);
+    setIsGameSheetOpen(true);
+  };
+
 	const { handleDelete, isDeleting, isDeleted } = useDeleteGameFromCollection({
 		gameId,
 		userId: session ? session.user.id : "",
@@ -29,10 +36,10 @@ export function CollectionGame({ coverId, name, gameId }: CollectionGameProps) {
 			// biome-ignore lint/a11y/useSemanticElements: No nested buttons
 			role="button"
 			tabIndex={0}
-			onClick={() => store.selectGame(gameId)}
+			onClick={handleSelectGame}
 			onKeyDown={(e) => {
 				if (e.key === "Enter") {
-					store.selectGame(gameId);
+					handleSelectGame();
 				}
 			}}
 			className="hover:bg-muted p-2 h-full rounded-md group text-left"
