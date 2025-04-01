@@ -4,6 +4,7 @@ import {
 	deletePlaylist,
 	getGamesInPlaylist,
 	getPlaylistById,
+	updatePlaylist,
 } from "~/db/queries/playlist";
 import { redirect } from "react-router";
 import { LibraryView } from "~/components/library/library-view";
@@ -12,6 +13,7 @@ import { MainLayout } from "~/components/layout/main";
 import { PlaylistMenu } from "./components/playlist-menu";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
+import { playlistsInsertSchema } from "~/db/schema/playlists";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -38,12 +40,30 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 // TODO: Authorisation on this delete action
 export const action = async ({ request, params }: Route.ActionArgs) => {
 	const { playlistId } = params;
+
 	if (request.method === "POST") {
 		const { gameId } = await parseForm(request, {
 			gameId: zx.NumAsString,
 		});
 		return await addGamesToPlaylist(playlistId, [gameId]);
 	}
+
+	if (request.method === "PUT") {
+		const data = await parseForm(
+			request,
+			playlistsInsertSchema
+				.omit({
+					id: true,
+					creatorId: true,
+					createdAt: true,
+					updatedAt: true,
+				})
+				.partial(),
+		);
+
+		return await updatePlaylist(playlistId, data);
+	}
+
 	if (request.method === "DELETE") {
 		return await deletePlaylist(playlistId);
 	}
@@ -63,7 +83,6 @@ export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 						gameId={game.id}
 						coverId={game.coverImageId}
 						name={game.name}
-						playlists={[]}
 					/>
 				))}
 			</LibraryView>
