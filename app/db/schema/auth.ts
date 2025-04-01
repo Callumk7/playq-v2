@@ -1,6 +1,6 @@
 
 import { relations } from "drizzle-orm";
-import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { usersToGames } from "./collection";
 import { playlists } from "./playlists";
 

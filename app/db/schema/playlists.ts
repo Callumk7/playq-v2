@@ -10,6 +10,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { games } from "./games";
+import { createInsertSchema } from "drizzle-zod";
+import type { z } from "zod";
 
 export const privacySettingEnum = pgEnum("privacy_setting", ["PUBLIC", "FRIENDS_ONLY", "LINK_SHARING", "PRIVATE"]);
 
@@ -45,6 +47,9 @@ export const gamesToPlaylists = pgTable(
 	(t) => [primaryKey({ columns: [t.gameId, t.playlistId] })],
 );
 
+export const playlistsInsertSchema = createInsertSchema(playlists);
+export type PlaylistsInsertSchemaType = z.infer<typeof playlistsInsertSchema>;
+
 export const gamesToPlaylistsRelations = relations(gamesToPlaylists, ({ one }) => ({
 	game: one(games, {
 		fields: [gamesToPlaylists.gameId],
@@ -79,3 +84,4 @@ export const playlistPermissionsRelations = relations(playlistPermissions, ({one
 		references: [user.id],
 	})
 }))
+

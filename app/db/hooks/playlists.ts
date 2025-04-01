@@ -1,4 +1,5 @@
 import { useFetcher } from "react-router";
+import type { UpdatePlaylist } from "../queries/playlist";
 
 export const useDeletePlaylist = (playlistId: string) => {
 	const fetcher = useFetcher();
@@ -33,8 +34,6 @@ export const useAddGamesToPlaylist = (playlistId: string) => {
 	return { handleAddGame, isAdding: fetcher.state === "submitting" };
 };
 
-// TODO: This wont work as this route's delete method is used for deleting playlists
-// I should instead make an api route for handling this specific thing
 export const useRemoveGameFromPlaylist = (playlistId: string) => {
 	const fetcher = useFetcher();
 
@@ -50,3 +49,19 @@ export const useRemoveGameFromPlaylist = (playlistId: string) => {
 
 	return { handleRemoveGame, isRemoving: fetcher.state === "submitting" };
 };
+
+export const useUpdatePlaylist = (playlistId: string) => {
+	const fetcher = useFetcher();
+
+	const handleUpdatePlaylist = (data: UpdatePlaylist) => {
+		fetcher.submit(data, {
+			method: "put",
+			action: `/collection/playlists/${playlistId}`,
+		});
+	}
+
+	return {
+		handleUpdatePlaylist,
+		isUpdating: fetcher.state === "submitting",
+	}
+}
