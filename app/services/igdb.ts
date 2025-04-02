@@ -2,10 +2,9 @@
 //                           IGDB TYPESCRIPT SDK
 ////////////////////////////////////////////////////////////////////////////////
 
+import { IGDB_BASE_URL } from "~/constants";
 import { env } from "~/lib/env";
 import { GameSearchResultSchema, IGDBGameSchema } from "~/schema/igdb";
-
-const IGDB_BASE_URL = "https://api.igdb.com/v4";
 
 class IGDBClient {
 	private baseUrl: string = IGDB_BASE_URL;
@@ -80,7 +79,6 @@ class APIClient {
 		return await response.json();
 	}
 }
-
 
 class QueryBuilder {
 	private fields: string[] = [];
@@ -224,14 +222,27 @@ export async function getSearchResults(query: string | null, page: string | null
 
 	const games = await client.execute<unknown[]>(
 		"games",
-		client.games("default").search(query).limit(limit).offset(offset),
+		client
+			.games("default")
+			.select(
+				"first_release_date",
+				"genres.name",
+				"platforms.name",
+				"total_rating",
+				"total_rating_count",
+			)
+			.search(query)
+			.limit(limit)
+			.offset(offset),
 	);
 
 	const parsedResults = [];
 	for (const game of games) {
-		const result = IGDBGameSchema.safeParse(game);
+		const result = GameSearchResultSchema.safeParse(game);
 		if (result.success) {
 			parsedResults.push(result.data);
+		} else {
+			console.log(`Failed to parse: ${game.name}`);
 		}
 	}
 
@@ -252,4 +263,3 @@ export async function getFullGame(gameId: number) {
 
 	throw new Error("Failed to parse game");
 }
-

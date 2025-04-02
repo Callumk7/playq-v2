@@ -1,12 +1,11 @@
-import { getSearchResults, getTopRatedRecentGames } from "~/services/igdb";
+import { getSearchResults } from "~/services/igdb";
 import type { Route } from "./+types/games";
 import { ExploreGameSearch } from "~/components/explore/search";
-import { LibraryView } from "~/components/library/library-view";
 import { LocalCache } from "~/lib/cache";
 import { validateAndMapGame } from "~/services/database-sync";
 import { db } from "~/db";
 import { games, type GamesInsert } from "~/db/schema/games";
-import { ExploreGame } from "~/components/library/explore-game-item";
+import { SearchResultsTable } from "~/components/explore/search-results-table";
 
 function getSearchParams(urlString: string) {
 	const url = new URL(urlString);
@@ -25,7 +24,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	const { search, page } = getSearchParams(request.url);
 	const results = await (search
 		? getSearchResults(search, page)
-		: getTopRatedRecentGames());
+		: []);
 
   if (results.length === 0) {
     return [];
@@ -79,11 +78,7 @@ export default function ExploreGamesPage({ loaderData }: Route.ComponentProps) {
 	return (
 		<div className="p-2 space-y-2">
 			<ExploreGameSearch />
-			<LibraryView>
-				{games?.map((game) => (
-					<ExploreGame key={game.id} gameId={game.id} coverId={game.cover ? game.cover.image_id : null} name={game.name} />
-				))}
-			</LibraryView>
+      <SearchResultsTable games={games} />
 		</div>
 	);
 }

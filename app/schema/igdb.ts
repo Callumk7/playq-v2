@@ -6,7 +6,12 @@ export const GameSearchResultSchema = z.object({
 	cover: z.object({
 		id: z.number(),
 		image_id: z.string(),
-	}),
+	}).optional(),
+	first_release_date: z.number().optional(),
+	genres: z.array(z.object({ id: z.number(), name: z.string() })).optional(),
+	platforms: z.array(z.object({ id: z.number(), name: z.string() })).optional(),
+	total_rating: z.number().optional(),
+	total_rating_count: z.number().optional(),
 });
 
 export type GameSearchResult = z.infer<typeof GameSearchResultSchema>;

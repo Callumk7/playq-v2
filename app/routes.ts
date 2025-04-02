@@ -10,7 +10,6 @@ export default [
 				route("games", "./routes/explore/games.tsx"),
 				route("playlists", "./routes/explore/playlists.tsx"),
 				route("top-rated", "./routes/explore/top-rated.tsx"),
-				route("most-played", "./routes/explore/most-played.tsx"),
 				route("hyped", "./routes/explore/hyped.tsx"),
 			]),
 			route("collection", "./routes/collection/layout.tsx", [

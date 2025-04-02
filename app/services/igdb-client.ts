@@ -1,3 +1,5 @@
+import { GameSearchResultSchema } from "~/schema/igdb";
+
 class APIClient {
 	private baseUrl: string;
 	private apikey: string;
@@ -35,7 +37,6 @@ class APIClient {
 }
 
 export async function clientGetMostPlayed(url: string, apiKey: string) {
-	console.log("getting most played")
 	const client = new APIClient(apiKey, url);
 
 	const results = await client.execute<unknown[]>(
@@ -43,7 +44,16 @@ export async function clientGetMostPlayed(url: string, apiKey: string) {
 		client.games().select("hypes").where("hypes > 50").sort("hypes", "desc"),
 	);
 
-	return results;
+	// TODO: There is no error handling for responses in an incorrect state
+	const parsedResults = [];
+	for (const game of results) {
+		const result = GameSearchResultSchema.safeParse(game);
+		if (result.success) {
+			parsedResults.push(result.data);
+		}
+	}
+
+	return parsedResults;
 }
 
 /// QUERY BUILDER
