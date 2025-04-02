@@ -14,10 +14,18 @@ if (!process.env.BETTER_AUTH_SECRET) {
 if (!process.env.BETTER_AUTH_URL) {
 	throw new Error("BETTER_AUTH_URL is not defined");
 }
+if (!process.env.API_GATEWAY_URL) {
+	throw new Error("API_GATEWAY_URL is not defined");
+}
+if (!process.env.API_GATEWAY_KEY) {
+	throw new Error("API_GATEWAY_KEY is not defined");
+}
 
 export const env = {
 	IGDB_CLIENT_ID: process.env.IGDB_CLIENT_ID,
 	IGDB_BEARER_TOKEN: process.env.IGDB_BEARER_TOKEN,
+	API_GATEWAY_URL: process.env.API_GATEWAY_URL,
+	API_GATEWAY_KEY: process.env.API_GATEWAY_KEY,
 	DB_URL: process.env.DB_URL,
 	BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 	BETTER_AUTH_URL: process.env.BETTER_AUTH_URL
