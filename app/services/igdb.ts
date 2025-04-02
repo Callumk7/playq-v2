@@ -7,7 +7,7 @@ import { GameSearchResultSchema, IGDBGameSchema } from "~/schema/igdb";
 
 const IGDB_BASE_URL = "https://api.igdb.com/v4";
 
-export class IGDBClient {
+class IGDBClient {
 	private baseUrl: string = IGDB_BASE_URL;
 	private clientId: string;
 	private accessToken: string;
@@ -17,7 +17,9 @@ export class IGDBClient {
 		this.accessToken = accessToken;
 	}
 
-	games(preset: "full" | "default" | "complete" | "none" | "fullGame" = "default"): QueryBuilder {
+	games(
+		preset: "full" | "default" | "complete" | "none" | "fullGame" = "default",
+	): QueryBuilder {
 		return new QueryBuilder().selectPreset(preset);
 	}
 
@@ -42,6 +44,43 @@ export class IGDBClient {
 		return await response.json();
 	}
 }
+
+class APIClient {
+	private baseUrl: string;
+	private apikey: string;
+
+	constructor(apikey: string, baseUrl: string) {
+		this.apikey = apikey;
+		this.baseUrl = baseUrl;
+	}
+
+	games(
+		preset: "full" | "default" | "complete" | "none" | "fullGame" = "default",
+	): QueryBuilder {
+		return new QueryBuilder().selectPreset(preset);
+	}
+
+	async execute<T>(endpoint: string, queryBuilder: QueryBuilder): Promise<T> {
+		const query = queryBuilder.build();
+		const response = await fetch(`${this.baseUrl}/${endpoint}`, {
+			method: "POST",
+			headers: {
+				"x-api-key": this.apikey,
+				Accept: "application/json",
+				"Content-Type": "text/plain",
+			},
+			body: query,
+		});
+
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message);
+		}
+
+		return await response.json();
+	}
+}
+
 
 class QueryBuilder {
 	private fields: string[] = [];
@@ -76,8 +115,8 @@ class QueryBuilder {
 			"cover.image_id",
 			"genres.name",
 			"external_games.*",
-			"related_games.*"
-		]
+			"related_games.*",
+		],
 	};
 
 	selectPreset(
@@ -146,7 +185,8 @@ class QueryBuilder {
 //                                Static Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-const client = new IGDBClient(env.IGDB_CLIENT_ID, env.IGDB_BEARER_TOKEN);
+//const client = new IGDBClient(env.IGDB_CLIENT_ID, env.IGDB_BEARER_TOKEN);
+const client = new APIClient(env.API_GATEWAY_KEY, env.API_GATEWAY_URL);
 
 export async function getTopRatedRecentGames() {
 	const games = await client.execute<unknown[]>(
@@ -184,11 +224,7 @@ export async function getSearchResults(query: string | null, page: string | null
 
 	const games = await client.execute<unknown[]>(
 		"games",
-		client
-			.games("default")
-			.search(query)
-			.limit(limit)
-			.offset(offset),
+		client.games("default").search(query).limit(limit).offset(offset),
 	);
 
 	const parsedResults = [];
@@ -216,3 +252,4 @@ export async function getFullGame(gameId: number) {
 
 	throw new Error("Failed to parse game");
 }
+
