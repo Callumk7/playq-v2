@@ -14,6 +14,7 @@ import { PlaylistMenu } from "./components/playlist-menu";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
 import { playlistsInsertSchema } from "~/db/schema/playlists";
+import { CommentsLayout } from "~/components/layout/comments-sidebar";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -74,19 +75,33 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
 export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 	const { playlist, playlistGames } = loaderData;
 	return (
-		<MainLayout>
-			<PlaylistMenu playlistId={playlist.id} />
-			<LibraryView>
-				{playlistGames?.map((game) => (
-					<CollectionGame
-						key={game.id}
-						gameId={game.id}
-						coverId={game.coverImageId}
-						name={game.name}
-					/>
-				))}
-			</LibraryView>
-		</MainLayout>
+    <CommentsLayout commentsSlot={<SampleComments />}>
+      <PlaylistMenu playlistId={playlist.id} privacySetting={playlist.privacySetting} />
+      <LibraryView>
+        {playlistGames?.map((game) => (
+          // TODO: Make a playlist game item component?
+          <CollectionGame
+            key={game.id}
+            gameId={game.id}
+            coverId={game.coverImageId}
+            name={game.name}
+          />
+        ))}
+      </LibraryView>
+    </CommentsLayout>
+	);
+}
+
+function SampleComments() {
+	return (
+		<div>
+			<h2>Comments</h2>
+			<div>
+				<p>Comment 1</p>
+				<p>Comment 2</p>
+				<p>Comment 3</p>
+			</div>
+		</div>
 	);
 }
 

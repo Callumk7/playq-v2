@@ -6,7 +6,6 @@ import {
     removeGameFromCollection,
 } from "~/db/queries/collection";
 import { getPlaylists } from "~/db/queries/playlist";
-import { GameTable } from "~/components/library/table-view";
 import { CollectionMenubar } from "./components/collection-menubar";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
@@ -14,6 +13,7 @@ import { z } from "zod";
 import { GameSheet } from "~/components/library/components/game-sheet";
 import { Input } from "~/components/ui/input";
 import { useRouteLoaderData } from "react-router";
+import { MainLayout } from "~/components/layout/main";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -35,11 +35,12 @@ export const action = async ({ request }: Route.ActionArgs) => {
 	}
 };
 
+// TODO: implement client side search functionality
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
 
 	return (
-		<div>
+		<MainLayout>
 			<div className="flex gap-2">
 				<Input type="search" placeholder="Search" className="w-fit" />
 				<CollectionMenubar games={userCollection} />
@@ -54,11 +55,10 @@ export default function CollectionIndexPage({ loaderData }: Route.ComponentProps
 					/>
 				))}
 			</LibraryView>
-			<GameTable games={userCollection} />
 			<GameSheet
 				playlists={userPlaylists}
 			/>
-		</div>
+		</MainLayout>
 	);
 }
 

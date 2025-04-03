@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { CheckIcon, RefreshCwIcon, SaveIcon, TrainIcon } from "lucide-react";
 import { useAddGameToCollection } from "~/db/hooks/collection";
 import { useAuth } from "../context/auth";
+import { SaveSearchResultButton } from "./search-results-button";
 
 interface SearchResultsTableProps {
 	games: GameSearchResult[];
@@ -66,27 +67,4 @@ export function SearchResultsTable({ games }: SearchResultsTableProps) {
 	});
 
 	return <BaseTable table={table} />;
-}
-
-interface SaveSearchResultButtonProps {
-	gameId: number;
-}
-function SaveSearchResultButton({ gameId }: SaveSearchResultButtonProps) {
-	const { user } = useAuth();
-
-	const { handleAdd, isAdded, isAdding, showTick } = useAddGameToCollection(user.id);
-
-	return (
-		<Button size={"icon"} variant={"outline"} onClick={() => handleAdd(gameId)}>
-			{isAdding ? (
-				<RefreshCwIcon className="animate-spin" />
-			) : showTick ? (
-				<CheckIcon />
-			) : isAdded ? (
-				<TrainIcon />
-			) : (
-				<SaveIcon />
-			)}
-		</Button>
-	);
 }

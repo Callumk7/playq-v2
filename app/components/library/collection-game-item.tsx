@@ -4,6 +4,8 @@ import { CoverImage } from "./base-game-item";
 import { useDeleteGameFromCollection } from "~/db/hooks/collection";
 import { useCollectionStore } from "~/stores/games-collection-store";
 import { useAuth } from "../context/auth";
+import { GameDebug } from "~/tools/game-debug";
+import type { Game } from "~/db/queries/games";
 
 interface CollectionGameProps {
 	coverId: string | null;

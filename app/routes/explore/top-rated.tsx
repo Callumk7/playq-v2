@@ -2,6 +2,7 @@ import { getTopRatedRecentGames } from "~/services/igdb";
 import type { Route } from "./+types/top-rated";
 import { LibraryView } from "~/components/library/library-view";
 import { ExploreGame } from "~/components/library/explore-game-item";
+import { MainLayout } from "~/components/layout/main";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const topRatedGames = await getTopRatedRecentGames();
@@ -12,7 +13,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps) {
 	const topGames = loaderData;
 	return (
-		<div>
+		<MainLayout>
 			<LibraryView>
 				{topGames?.map((game) => (
 					<ExploreGame
@@ -20,10 +21,11 @@ export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps
 						name={game.name}
 						gameId={game.id}
 						coverId={game.cover?.image_id ?? null}
+            rating={game.total_rating ?? 0}
 					/>
 				))}
 			</LibraryView>
-		</div>
+		</MainLayout>
 	);
 }
 

@@ -190,7 +190,12 @@ export async function getTopRatedRecentGames() {
 		"games",
 		client
 			.games("default")
-			.select("rating_count", "first_release_date")
+			.select(
+				"rating_count",
+				"first_release_date",
+				"total_rating",
+				"total_rating_count",
+			)
 			.where("rating_count >= 150")
 			.where("parent_game = null")
 			.sort("rating", "desc")
@@ -256,11 +261,10 @@ export async function getFullGame(gameId: number) {
 
 	const result = IGDBGameSchema.safeParse(results[0]);
 
-
 	if (result.success) {
 		return result.data;
 	}
 
-	console.error(result.error.flatten())
+	console.error(result.error.flatten());
 	throw new Error("Failed to parse game");
 }
