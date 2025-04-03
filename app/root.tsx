@@ -47,11 +47,9 @@ const client = new QueryClient();
 
 export default function App() {
 	return (
-    <AuthProvider>
-      <QueryClientProvider client={client}>
-        <Outlet />
-      </QueryClientProvider>
-    </AuthProvider>
+    <QueryClientProvider client={client}>
+      <Outlet />
+    </QueryClientProvider>
 	);
 }
 

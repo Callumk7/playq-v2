@@ -20,7 +20,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ 
   children, 
-  loginPath = '/login' 
+  loginPath = 'auth/login' 
 }: AuthProviderProps) {
   const { session, isPending } = useSession();
   
