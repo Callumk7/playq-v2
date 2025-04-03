@@ -33,11 +33,11 @@ export function CreatePlaylistSheet() {
 	);
 }
 
-function CreatePlaylistForm() {
+export function CreatePlaylistForm() {
 	const { user } = useAuth();
 
 	return (
-		<Form method="post">
+		<Form method="POST" action="/collection/playlists?index">
 			<div className="space-y-2 p-2">
 				<InputWithLabel label="Name" id="name" name="name" />
         <input type="hidden" name="userId" value={user.id} />

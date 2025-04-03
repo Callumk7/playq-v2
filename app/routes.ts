@@ -17,6 +17,7 @@ export default [
 				route("playlists", "./routes/collection/playlists/layout.tsx", [
 					index("./routes/collection/playlists/index.tsx"),
 					route(":playlistId", "./routes/collection/playlists/playlist.tsx"),
+					route("new", "./routes/collection/playlists/new.tsx")
 				]),
 			]),
 			route("games/:gameId", "./routes/games/game.tsx"),
