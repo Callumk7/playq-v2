@@ -41,6 +41,7 @@ export function ExploreGame({ coverId, name, gameId }: ExploreGameProps) {
 	const handleSave = async () => {
 		// TODO: there is a better-auth method for doing this
 		const userId = localStorage.getItem("userId");
+    // TODO: extract to hooks
 		fetcher.submit({ userId, gameId }, { method: "POST", action: "/api/collection" });
 	};
 

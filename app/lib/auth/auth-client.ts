@@ -5,7 +5,16 @@ export const authClient = createAuthClient({
 });
 
 export function useSession() {
-	const { data: session } = authClient.useSession();
-	return session;
+	const { data: session, error, isPending } = authClient.useSession();
+
+	if (error) {
+		throw error;
+	}
+
+	return { session, isPending };
 }
+
+// Auth context
+
+
 

@@ -8,6 +8,10 @@ import {
 import { useMemo, useState } from "react";
 import type { GameSearchResult } from "~/schema/igdb";
 import { BaseTable } from "../base-table";
+import { Button } from "../ui/button";
+import { CheckIcon, RefreshCwIcon, SaveIcon, TrainIcon } from "lucide-react";
+import { useAddGameToCollection } from "~/db/hooks/collection";
+import { useAuth } from "../context/auth";
 
 interface SearchResultsTableProps {
 	games: GameSearchResult[];
@@ -25,11 +29,11 @@ export function SearchResultsTable({ games }: SearchResultsTableProps) {
 			h.accessor("total_rating", {
 				header: "Rating",
 				cell: (info) => {
-          if (info.getValue()) {
-            return Math.floor(info.getValue() || 0)
-          }
-          return "Not Rated"
-        }
+					if (info.getValue()) {
+						return Math.floor(info.getValue() || 0);
+					}
+					return "Not Rated";
+				},
 			}),
 			h.accessor("first_release_date", {
 				header: "Year",
@@ -37,6 +41,13 @@ export function SearchResultsTable({ games }: SearchResultsTableProps) {
 					if (info.getValue()) {
 						return new Date(Number(info.getValue()) * 1000).getFullYear();
 					}
+				},
+			}),
+			h.display({
+				id: "actions",
+				header: "",
+				cell: ({ row }) => {
+					return <SaveSearchResultButton gameId={row.original.id} />;
 				},
 			}),
 		];
@@ -55,4 +66,27 @@ export function SearchResultsTable({ games }: SearchResultsTableProps) {
 	});
 
 	return <BaseTable table={table} />;
+}
+
+interface SaveSearchResultButtonProps {
+	gameId: number;
+}
+function SaveSearchResultButton({ gameId }: SaveSearchResultButtonProps) {
+	const { user } = useAuth();
+
+	const { handleAdd, isAdded, isAdding, showTick } = useAddGameToCollection(user.id);
+
+	return (
+		<Button size={"icon"} variant={"outline"} onClick={() => handleAdd(gameId)}>
+			{isAdding ? (
+				<RefreshCwIcon className="animate-spin" />
+			) : showTick ? (
+				<CheckIcon />
+			) : isAdded ? (
+				<TrainIcon />
+			) : (
+				<SaveIcon />
+			)}
+		</Button>
+	);
 }

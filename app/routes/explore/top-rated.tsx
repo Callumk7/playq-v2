@@ -1,6 +1,7 @@
 import { getTopRatedRecentGames } from "~/services/igdb";
 import type { Route } from "./+types/top-rated";
 import { LibraryView } from "~/components/library/library-view";
+import { ExploreGame } from "~/components/library/explore-game-item";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const topRatedGames = await getTopRatedRecentGames();
@@ -14,7 +15,12 @@ export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps
 		<div>
 			<LibraryView>
 				{topGames?.map((game) => (
-					<div key={game.id}>{game.name}</div>
+					<ExploreGame
+						key={game.id}
+						name={game.name}
+						gameId={game.id}
+						coverId={game.cover?.image_id ?? null}
+					/>
 				))}
 			</LibraryView>
 		</div>
@@ -22,5 +28,5 @@ export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps
 }
 
 export const handle = {
-  breadcrumb: "Top Rated"
-}
+	breadcrumb: "Top Rated",
+};

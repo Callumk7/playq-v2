@@ -113,7 +113,6 @@ class QueryBuilder {
 			"cover.image_id",
 			"genres.name",
 			"external_games.*",
-			"related_games.*",
 		],
 	};
 
@@ -252,14 +251,16 @@ export async function getSearchResults(query: string | null, page: string | null
 export async function getFullGame(gameId: number) {
 	const results = await client.execute<unknown[]>(
 		"games",
-		client.games("fullGame").where(`id = ${gameId}`),
+		client.games("complete").where(`id = ${gameId}`),
 	);
 
 	const result = IGDBGameSchema.safeParse(results[0]);
+
 
 	if (result.success) {
 		return result.data;
 	}
 
+	console.error(result.error.flatten())
 	throw new Error("Failed to parse game");
 }
