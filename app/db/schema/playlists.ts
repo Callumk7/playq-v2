@@ -23,7 +23,7 @@ export const playlists = pgTable("playlists", {
 		.references(() => user.id),
 	createdAt: timestamp("created_at", { mode: "date" }).notNull(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).notNull(),
-	privacySetting: privacySettingEnum().default("PRIVATE")
+	privacySetting: privacySettingEnum().default("PRIVATE").notNull()
 });
 
 export const playlistsRelations = relations(playlists, ({ one, many }) => ({
@@ -32,6 +32,7 @@ export const playlistsRelations = relations(playlists, ({ one, many }) => ({
 		references: [user.id],
 	}),
 	games: many(gamesToPlaylists),
+	permissions: many(playlistPermissions)
 }));
 
 export const gamesToPlaylists = pgTable(
@@ -64,14 +65,14 @@ export const gamesToPlaylistsRelations = relations(gamesToPlaylists, ({ one }) =
 export const roleEnum = pgEnum("role", ["OWNER", "EDITOR", "COLLABORATOR", "VIEWER"]);
 
 export const playlistPermissions = pgTable("playlist_permissions", {
-	permissionId: uuid("permission_id").defaultRandom(),
-	playlistId: uuid("playlist_id").references(() => playlists.id),
-	userId: text("user_id").references(() => user.id),
+	permissionId: uuid("permission_id").defaultRandom().primaryKey(),
+	playlistId: uuid("playlist_id").references(() => playlists.id).notNull(),
+	userId: text("user_id").references(() => user.id).notNull(),
 	createdAt: timestamp("created_at", { mode: "date" }).notNull(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).notNull(),
 	grantedAt: timestamp("granted_at", { mode: "date" }).notNull(),
 	grantedBy: text("granted_by").notNull(),
-	roleType: roleEnum()
+	roleType: roleEnum().notNull()
 })
 
 export const playlistPermissionsRelations = relations(playlistPermissions, ({one}) => ({
