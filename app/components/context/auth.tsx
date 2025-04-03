@@ -25,6 +25,7 @@ export function AuthProvider({
   const { session, isPending } = useSession();
   
   // If we're still loading, show a loading indicator
+  // TODO: Add a better loading indicator
   if (isPending) {
     return <div>Loading authentication...</div>;
   }
