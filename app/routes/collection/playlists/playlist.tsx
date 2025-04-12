@@ -9,7 +9,6 @@ import {
 import { redirect } from "react-router";
 import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/playlist";
-import { MainLayout } from "~/components/layout/main";
 import { PlaylistMenu } from "./components/playlist-menu";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";

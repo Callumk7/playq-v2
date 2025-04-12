@@ -4,6 +4,7 @@ import {
 	ChevronsUpDown,
 	CreditCard,
 	LogOut,
+	PersonStandingIcon,
 	Sparkles,
 } from "lucide-react";
 
@@ -25,10 +26,13 @@ import {
 } from "~/components/ui/sidebar";
 import { useAuth } from "../context/auth";
 import { authClient } from "~/lib/auth/auth-client";
+import { useNavigate } from "react-router";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
 	const { user } = useAuth();
+
+  const navigate = useNavigate();
 
   const signOut = authClient.signOut;
 
@@ -48,7 +52,9 @@ export function NavUser() {
 						>
 							<Avatar className="h-8 w-8 rounded-lg">
 								<AvatarImage src={user.image ?? undefined} alt={user.name} />
-								<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+								<AvatarFallback className="rounded-lg">
+                  <PersonStandingIcon />
+                </AvatarFallback>
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-medium">{user.name}</span>
@@ -84,7 +90,7 @@ export function NavUser() {
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
+							<DropdownMenuItem onClick={() => navigate("/account")}>
 								<BadgeCheck />
 								Account
 							</DropdownMenuItem>

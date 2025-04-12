@@ -4,7 +4,8 @@ import { z } from "zod";
 import { createPlaylist, getPlaylists } from "~/db/queries/playlist";
 import type { Route } from "./+types";
 import { CreatePlaylistSheet } from "./components/create-playlist-sheet";
-import { PlaylistTable } from "./components/playlist-table";
+import { MainLayout } from "~/components/layout/main";
+import { PlaylistTable } from "~/components/playlists/playlist-table";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -25,10 +26,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function ({ loaderData }: Route.ComponentProps) {
 	const userPlaylists = loaderData;
 	return (
-		<div>
-			<h2>Collection Playlists Page</h2>
-			<CreatePlaylistSheet />
+    <MainLayout>
+      <CreatePlaylistSheet />
       <PlaylistTable playlists={userPlaylists} />
-		</div>
+    </MainLayout>
 	);
 }

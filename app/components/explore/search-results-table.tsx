@@ -6,19 +6,15 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-import type { GameSearchResult } from "~/schema/igdb";
+import type { IGDBGame } from "~/schema/igdb";
 import { BaseTable } from "../base-table";
-import { Button } from "../ui/button";
-import { CheckIcon, RefreshCwIcon, SaveIcon, TrainIcon } from "lucide-react";
-import { useAddGameToCollection } from "~/db/hooks/collection";
-import { useAuth } from "../context/auth";
 import { SaveSearchResultButton } from "./search-results-button";
 
 interface SearchResultsTableProps {
-	games: GameSearchResult[];
+	games: IGDBGame[];
 }
 
-const h = createColumnHelper<GameSearchResult>();
+const h = createColumnHelper<IGDBGame>();
 
 export function SearchResultsTable({ games }: SearchResultsTableProps) {
 	const columns = useMemo(() => {

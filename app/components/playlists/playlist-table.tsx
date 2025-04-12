@@ -3,8 +3,6 @@ import {
 	Table,
 	TableBody,
 	TableCell,
-	TableHead,
-	TableHeader,
 	TableRow,
 } from "~/components/ui/table";
 import type { Playlist } from "~/db/queries/playlist";
@@ -16,11 +14,6 @@ interface PlaylistTableProps {
 export function PlaylistTable({ playlists }: PlaylistTableProps) {
 	return (
 		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead>Name</TableHead>
-				</TableRow>
-			</TableHeader>
 			<TableBody>
 				{playlists.map((playlist) => (
 					<TableRow key={playlist.id}>

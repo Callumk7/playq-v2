@@ -2,8 +2,8 @@ import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/games";
 import { getAndValidateSession } from "~/lib/auth/helpers";
 import {
-    getUserGamesWithPlaylistIds,
-    removeGameFromCollection,
+	getUserGamesWithPlaylistIds,
+	removeGameFromCollection,
 } from "~/db/queries/collection";
 import { getPlaylists } from "~/db/queries/playlist";
 import { CollectionMenubar } from "./components/collection-menubar";
@@ -14,6 +14,7 @@ import { GameSheet } from "~/components/library/components/game-sheet";
 import { Input } from "~/components/ui/input";
 import { useRouteLoaderData } from "react-router";
 import { MainLayout } from "~/components/layout/main";
+import { useSearch } from "~/hooks/use-search";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -39,14 +40,22 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
 
+	const { searchTerm, setSearchTerm, searchedGames } = useSearch(userCollection);
+
 	return (
 		<MainLayout>
 			<div className="flex gap-2">
-				<Input type="search" placeholder="Search" className="w-fit" />
-				<CollectionMenubar games={userCollection} />
+				<Input
+					type="search"
+					placeholder="Search"
+					className="w-fit"
+					value={searchTerm}
+					onInput={(e) => setSearchTerm(e.currentTarget.value)}
+				/>
+				<CollectionMenubar games={searchedGames} />
 			</div>
 			<LibraryView>
-				{userCollection?.map((game) => (
+				{searchedGames?.map((game) => (
 					<CollectionGame
 						key={game.id}
 						gameId={game.id}
@@ -55,9 +64,7 @@ export default function CollectionIndexPage({ loaderData }: Route.ComponentProps
 					/>
 				))}
 			</LibraryView>
-			<GameSheet
-				playlists={userPlaylists}
-			/>
+			<GameSheet playlists={userPlaylists} />
 		</MainLayout>
 	);
 }

@@ -46,7 +46,7 @@ const exploreData = [
     },
     {
       name: "Top Rated",
-      url: "/explore/top-rated",
+      url: "/explore/top-rated/all",
       icon: ArrowUp,
     },
     {

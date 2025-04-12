@@ -1,5 +1,7 @@
 import { getPlaylists } from "~/db/queries/playlist";
 import type { Route } from "./+types/playlists";
+import { MainLayout } from "~/components/layout/main";
+import { PlaylistTable } from "~/components/playlists/playlist-table";
 
 export const loader = async () => {
 	const publicPlaylists = await getPlaylists(undefined, false);
@@ -9,11 +11,12 @@ export const loader = async () => {
 export default function ExplorePlaylistsPage({ loaderData }: Route.ComponentProps) {
 	const publicPlaylists = loaderData;
 	return (
-		<div>
-			<h2>Explore Playlist Page</h2>
-			{publicPlaylists.map((playlist) => (
-				<div key={playlist.id}>{playlist.name}</div>
-			))}
-		</div>
+    <MainLayout>
+      <PlaylistTable playlists={publicPlaylists} />
+    </MainLayout>
 	);
+}
+
+export const handle = {
+  breadcrumb: "Playlists",
 }
