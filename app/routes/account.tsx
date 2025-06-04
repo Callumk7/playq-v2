@@ -7,11 +7,14 @@ import { InputWithLabel } from "~/components/forms/inputs";
 import type { User } from "better-auth";
 import { Button } from "~/components/ui/button";
 import { authClient } from "~/lib/auth/auth-client";
+import { withLoaderLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+const accountLoader = async ({ request }: Route.LoaderArgs) => {
 	const { user } = await getAndValidateSession(request);
 	return user;
 };
+
+export const loader = withLoaderLogging("account", accountLoader);
 
 export default function AccountPage({ loaderData }: Route.ComponentProps) {
 	const user = loaderData;

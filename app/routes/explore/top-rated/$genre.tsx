@@ -3,13 +3,16 @@ import type { Route } from "./+types/$genre";
 import { MainLayout } from "~/components/layout/main";
 import { LibraryView } from "~/components/library/library-view";
 import { ExploreGame } from "~/components/library/explore-game-item";
+import { withLoaderLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+const topRatedGenreLoader = async ({ params }: Route.LoaderArgs) => {
 	const genreId = params.genreId;
 	const topGames = await GetTopGamesByGenre(Number(genreId));
 
 	return topGames;
 };
+
+export const loader = withLoaderLogging("explore/top-rated/$genre", topRatedGenreLoader);
 
 export default function TopRatedByGenrePage({ loaderData }: Route.ComponentProps) {
   const topGames = loaderData;

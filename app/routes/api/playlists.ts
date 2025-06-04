@@ -2,8 +2,9 @@ import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { parseForm } from "zodix";
 import { addGamesToPlaylist } from "~/db/queries/playlist";
+import { withActionLogging } from "~/lib/route-logger.server";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+const playlistsAction = async ({ request }: ActionFunctionArgs) => {
 	const { playlistId, gameId } = await parseForm(request, {
 		playlistId: z.string(),
 		gameId: z.string(),
@@ -11,3 +12,5 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	return await addGamesToPlaylist(playlistId, [Number(gameId)]);
 };
+
+export const action = withActionLogging("api/playlists", playlistsAction);

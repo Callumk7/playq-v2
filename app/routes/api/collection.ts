@@ -9,13 +9,14 @@ import { games } from "~/db/schema/games";
 import { genresToGames } from "~/db/schema/genres";
 import { validateAndMapGame } from "~/schema/igdb";
 import { getFullGame } from "~/services/igdb.server";
+import { withActionLogging } from "~/lib/route-logger.server";
 
 const saveToCollectionSchema = z.object({
 	userId: z.string(),
 	gameId: z.string(),
 });
 
-export const action = async ({ request }: LoaderFunctionArgs) => {
+const collectionAction = async ({ request }: LoaderFunctionArgs) => {
 	// We want to create a join between users and games.
 	const { userId, gameId } = await parseForm(request, saveToCollectionSchema);
 
@@ -79,3 +80,5 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
 
 	return { success: true, data: { userId, gameId } };
 };
+
+export const action = withActionLogging("api/collection", collectionAction);

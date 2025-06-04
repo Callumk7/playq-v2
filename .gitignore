@@ -7,8 +7,9 @@
 
 # Dev
 .env
+.env.local
 
 /scripts
 
-
-.env.local
+# AI Stuff
+AGENT.md

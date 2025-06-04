@@ -6,6 +6,7 @@ import { games, type GamesInsert } from "~/db/schema/games";
 import { SearchResultsTable } from "~/components/explore/search-results-table";
 import { getSearchResults } from "~/services/igdb.server";
 import { validateAndMapGame } from "~/schema/igdb";
+import { withLoaderLogging } from "~/lib/route-logger.server";
 
 function getSearchParams(urlString: string) {
 	const url = new URL(urlString);
@@ -22,7 +23,7 @@ let isInitialRequest = true;
 
 // TODO: Abstract the validation into the igdb module
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+const exploreGamesLoader = async ({ request }: Route.LoaderArgs) => {
 	const { search, page } = getSearchParams(request.url);
 	const results = await (search
 		? getSearchResults(search, page)
@@ -49,6 +50,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 	return results;
 };
+
+export const loader = withLoaderLogging("explore/games", exploreGamesLoader);
 
 export const clientLoader = async ({ serverLoader, request }: Route.ClientLoaderArgs) => {
 	const { search } = getSearchParams(request.url);

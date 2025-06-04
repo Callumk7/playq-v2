@@ -20,8 +20,9 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "~/components/context/auth";
+import { withLoaderLogging, withActionLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+const playlistLoader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
 	const { playlistId } = params;
 	if (!playlistId) {
@@ -44,7 +45,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 };
 
 // TODO: Authorisation on this delete action
-export const action = async ({ request, params }: Route.ActionArgs) => {
+const playlistAction = async ({ request, params }: Route.ActionArgs) => {
 	const { playlistId } = params;
 
 	if (request.method === "POST") {
@@ -76,6 +77,9 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
 
 	return null;
 };
+
+export const loader = withLoaderLogging("collection/playlists/playlist", playlistLoader);
+export const action = withActionLogging("collection/playlists/playlist", playlistAction);
 
 export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 	const { playlist, playlistGames } = loaderData;

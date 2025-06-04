@@ -15,8 +15,9 @@ import { Input } from "~/components/ui/input";
 import { useRouteLoaderData } from "react-router";
 import { MainLayout } from "~/components/layout/main";
 import { useSearch } from "~/hooks/use-search";
+import { withLoaderLogging, withActionLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+const collectionGamesLoader = async ({ request }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
 
 	const userCollection = await getUserGamesWithPlaylistIds(session.user.id);
@@ -25,7 +26,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	return { userCollection, userPlaylists };
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
+const collectionGamesAction = async ({ request }: Route.ActionArgs) => {
 	if (request.method === "DELETE") {
 		const { userId, gameId } = await parseForm(request, {
 			userId: z.string(),
@@ -35,6 +36,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
 		return await removeGameFromCollection(userId, gameId);
 	}
 };
+
+export const loader = withLoaderLogging("collection/games", collectionGamesLoader);
+export const action = withActionLogging("collection/games", collectionGamesAction);
 
 // TODO: implement client side search functionality
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {

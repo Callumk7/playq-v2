@@ -5,13 +5,16 @@ import { GenreNavigation, GenreSelector } from "~/components/library/genre-selec
 import { getAllGenres, getTopGames } from "~/services/igdb.server";
 import { useState } from "react";
 import type { Route } from "./+types/all";
+import { withLoaderLogging } from "~/lib/route-logger.server";
 
-export const loader = async () => {
+const topRatedAllLoader = async () => {
 	const topRatedGames = await getTopGames();
 	const allGenres = await getAllGenres();
 
 	return { topRatedGames, allGenres };
 };
+
+export const loader = withLoaderLogging("explore/top-rated/all", topRatedAllLoader);
 
 export default function ExploreTopRatedPage({ loaderData }: Route.ComponentProps) {
 	const { topRatedGames, allGenres } = loaderData;
