@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,12 +44,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const client = new QueryClient();
+const convex = new ConvexReactClient("https://joyous-wolf-233.convex.cloud");
 
 export default function App() {
 	return (
-		<QueryClientProvider client={client}>
-			<Outlet />
-		</QueryClientProvider>
+    <ConvexProvider client={convex}>
+      <QueryClientProvider client={client}>
+        <Outlet />
+      </QueryClientProvider>
+    </ConvexProvider>
 	);
 }
 

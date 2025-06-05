@@ -8,7 +8,7 @@ interface MainLayoutProps {
 
 export function MainLayout({children, className} :MainLayoutProps) {
   return (
-    <div className={cn("space-y-4 h-full", className)}>
+    <div className={cn("space-y-4 p-4 h-full", className)}>
       {children}
     </div>
   )

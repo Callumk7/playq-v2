@@ -1,12 +1,13 @@
-import { getFullGame } from "~/services/igdb";
+import { getFullGame } from "~/services/igdb.server";
 import type { Route } from "./+types/game";
 import { validateParam } from "~/lib/validate-param";
 import { db } from "~/db";
 import { games } from "~/db/schema/games";
-import { validateAndMapGame } from "~/services/database-sync";
 import { eq } from "drizzle-orm";
+import { validateAndMapGame } from "~/schema/igdb";
+import { withLoaderLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+const gameLoader = async ({ request, params }: Route.LoaderArgs) => {
   const gameId = validateParam(params.gameId, "/collection/gamges")
 	const game = await getFullGame(Number(gameId));
 
@@ -17,8 +18,10 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const validGame = validateAndMapGame(game);
   await db.update(games).set(validGame).where(eq(games.id, validGame.id));
 
-  return game;
+  return game[0];
 };
+
+export const loader = withLoaderLogging("games/game", gameLoader);
 
 export default function GamePage({ loaderData }: Route.ComponentProps) {
   const game = loaderData;

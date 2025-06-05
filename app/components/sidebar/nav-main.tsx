@@ -1,53 +1,59 @@
 "use client";
 
 import {
-    Folder,
-    Forward,
-    FrameIcon, MoreHorizontal, PieChartIcon,
-    Trash2
+	Folder,
+	Forward,
+	FrameIcon,
+	MoreHorizontal,
+	PieChartIcon,
+	Trash2,
 } from "lucide-react";
 import { useMemo } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    useSidebar,
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuAction,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
+	useSidebar,
 } from "~/components/ui/sidebar";
 import type { Playlist } from "~/db/queries/playlist";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
 export function NavCollection({ playlists }: { playlists: Playlist[] }) {
 	const { isMobile } = useSidebar();
-	const collectionItems = useMemo(() => [
-		{
-			name: "My Games",
-			url: "/collection/games",
-			icon: FrameIcon,
-      items: [],
-		},
-		{
-			name: "My Playlists",
-			url: "/collection/playlists",
-			icon: PieChartIcon,
-			items: playlists.map((playlist) => ({
-				title: playlist.name,
-				url: `/collection/playlists/${playlist.id}`,
-			})),
-		},
-	], [playlists]);
+	const navigate = useNavigate();
+	const collectionItems = useMemo(
+		() => [
+			{
+				name: "My Games",
+				url: "/collection/games",
+				icon: FrameIcon,
+				items: [],
+			},
+			{
+				name: "My Playlists",
+				url: "/collection/playlists",
+				icon: PieChartIcon,
+				items: playlists.map((playlist) => ({
+					title: playlist.name,
+					url: `/collection/playlists/${playlist.id}`,
+				})),
+			},
+		],
+		[playlists],
+	);
 
 	return (
 		<SidebarGroup>
@@ -73,7 +79,7 @@ export function NavCollection({ playlists }: { playlists: Playlist[] }) {
 								side={isMobile ? "bottom" : "right"}
 								align={isMobile ? "end" : "start"}
 							>
-								<DropdownMenuItem>
+								<DropdownMenuItem onClick={() => navigate("/collection/playlists/new")}>
 									<Folder className="text-muted-foreground" />
 									<span>Create New Playlist</span>
 								</DropdownMenuItem>

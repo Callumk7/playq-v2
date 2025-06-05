@@ -4,6 +4,7 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema } from 'drizzle-zod';
 import type { z } from "zod";
 import { gamesToPlaylists } from "./playlists";
+import { genresToGames } from "./genres";
 
 export const basicGames = pgTable("basic_games", {
 	id: integer("id").primaryKey(),
@@ -74,7 +75,8 @@ export const games = pgTable("games", {
 
 export const gamesRelations = relations(games, ({ many }) => ({
 	users: many(usersToGames),
-	playlists: many(gamesToPlaylists)
+	playlists: many(gamesToPlaylists),
+	genresInternal: many(genresToGames),
 }));
 
 export const gamesInsertSchema = createInsertSchema(games);

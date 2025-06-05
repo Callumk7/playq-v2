@@ -1,12 +1,13 @@
 import {
+    ArrowUp,
   Folder,
   Forward,
-  Frame,
+  Gamepad,
+  HandIcon,
+  List,
   MapIcon,
   MoreHorizontal,
-  PieChart,
   Trash2,
-  type LucideIcon,
 } from "lucide-react"
 import { Link } from "react-router"
 
@@ -31,12 +32,12 @@ const exploreData = [
     {
       name: "Games",
       url: "/explore/games",
-      icon: Frame,
+      icon: Gamepad,
     },
     {
       name: "Playlists",
       url: "/explore/playlists",
-      icon: PieChart,
+      icon: List,
     },
     {
       name: "People",
@@ -45,18 +46,13 @@ const exploreData = [
     },
     {
       name: "Top Rated",
-      url: "/explore/top-rated",
-      icon: MapIcon,
-    },
-    {
-      name: "Most Played",
-      url: "/explore/most-played",
-      icon: MapIcon,
+      url: "/explore/top-rated/all",
+      icon: ArrowUp,
     },
     {
       name: "Hyped",
       url: "/explore/hyped",
-      icon: MapIcon,
+      icon: HandIcon,
     },
   ]
 

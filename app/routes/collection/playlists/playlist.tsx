@@ -9,13 +9,20 @@ import {
 import { redirect } from "react-router";
 import { LibraryView } from "~/components/library/library-view";
 import type { Route } from "./+types/playlist";
-import { MainLayout } from "~/components/layout/main";
 import { PlaylistMenu } from "./components/playlist-menu";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
 import { playlistsInsertSchema } from "~/db/schema/playlists";
+import { CommentsLayout } from "~/components/layout/comments-sidebar";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "convex/_generated/api";
+import { Textarea } from "~/components/ui/textarea";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
+import { useAuth } from "~/components/context/auth";
+import { withLoaderLogging, withActionLogging } from "~/lib/route-logger.server";
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+const playlistLoader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
 	const { playlistId } = params;
 	if (!playlistId) {
@@ -28,9 +35,9 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 		throw redirect("/collection/playlists");
 	}
 
-	if (playlist.creatorId !== session.user.id) {
-		throw redirect("/collection/playlists");
-	}
+	// if (playlist.creatorId !== session.user.id) {
+	// 	throw redirect("/collection/playlists");
+	// }
 
 	const playlistGames = await getGamesInPlaylist(playlistId);
 
@@ -38,7 +45,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 };
 
 // TODO: Authorisation on this delete action
-export const action = async ({ request, params }: Route.ActionArgs) => {
+const playlistAction = async ({ request, params }: Route.ActionArgs) => {
 	const { playlistId } = params;
 
 	if (request.method === "POST") {
@@ -71,13 +78,20 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
 	return null;
 };
 
+export const loader = withLoaderLogging("collection/playlists/playlist", playlistLoader);
+export const action = withActionLogging("collection/playlists/playlist", playlistAction);
+
 export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 	const { playlist, playlistGames } = loaderData;
+	const session = useAuth();
 	return (
-		<MainLayout>
-			<PlaylistMenu playlistId={playlist.id} />
+		<CommentsLayout
+			commentsSlot={<SampleComments userId={session.user.id} playlistId={playlist.id} />}
+		>
+			<PlaylistMenu playlistId={playlist.id} privacySetting={playlist.privacySetting} />
 			<LibraryView>
 				{playlistGames?.map((game) => (
+					// TODO: Make a playlist game item component?
 					<CollectionGame
 						key={game.id}
 						gameId={game.id}
@@ -86,7 +100,56 @@ export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 					/>
 				))}
 			</LibraryView>
-		</MainLayout>
+		</CommentsLayout>
+	);
+}
+
+interface SampleCommentsProps {
+	userId: string;
+	playlistId: string;
+}
+function SampleComments({ userId, playlistId }: SampleCommentsProps) {
+	const [content, setContent] = useState("");
+	const postComment = useMutation(api.comments.mutations.postComment);
+
+	const comments = useQuery(api.comments.queries.getComments, { playlistId });
+	return (
+		<div className="p-4 space-y-4">
+			<h2 className="text-lg font-semibold">Comments</h2>
+			{comments?.map((comment) => (
+				<div
+					key={comment._id}
+					className={`flex ${comment.userId === userId ? "justify-end" : "justify-start"} mb-4`}
+				>
+					<div
+						className={`max-w-[70%] ${comment.userId === userId ? "order-1" : "order-0"}`}
+					>
+						<div
+							className={`relative px-4 py-2 rounded-lg ${
+								comment.userId === userId
+									? "bg-primary text-primary-foreground rounded-br-none"
+									: "bg-gray-100 text-gray-800 rounded-bl-none"
+							}`}
+						>
+							<p className="text-sm">{comment.content}</p>
+							<span className="block text-xs mt-1 opacity-70">{comment.userId}</span>
+						</div>
+					</div>
+				</div>
+			))}
+
+			<form
+				className="space-y-2"
+				onSubmit={async (e) => {
+					e.preventDefault();
+					await postComment({ userId, playlistId, content });
+          setContent("");
+				}}
+			>
+				<Textarea value={content} onInput={(e) => setContent(e.currentTarget.value)} />
+				<Button type="submit">Send</Button>
+			</form>
+		</div>
 	);
 }
 

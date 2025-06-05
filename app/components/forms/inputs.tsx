@@ -13,5 +13,3 @@ export function InputWithLabel({ label, id, ...props }: InputWithLabelProps) {
     </div>
   );
 }
-
-export function TextAreaWithLabel() {}

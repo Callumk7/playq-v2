@@ -10,6 +10,7 @@ export type PlaylistWithGames = Playlist & { gameIds: number[] };
 export type UpdatePlaylist = Partial<
 	Omit<typeof playlists.$inferInsert, "id" | "creatorId" | "createdAt" | "updatedAt">
 >;
+export type PlaylistWithCreator = Playlist & { creator: { id: string; name: string } };
 
 export type PlaylistVisibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY" | "LINK_SHARING";
 
@@ -65,6 +66,14 @@ export async function getPlaylistById(id: string): Promise<PlaylistWithGames | n
 		...playlist,
 		gameIds,
 	};
+}
+
+// Get playlists by ids
+export async function getPlaylistsById(ids: string[], withCreator = false) {
+	return db.query.playlists.findMany({
+		where: inArray(playlists.id, ids),
+		with: withCreator ? { creator: true } : undefined,
+	});
 }
 
 // Get all playlists (with optional filtering by creator)

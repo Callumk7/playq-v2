@@ -7,4 +7,9 @@
 
 # Dev
 .env
+.env.local
 
+/scripts
+
+# AI Stuff
+AGENT.md

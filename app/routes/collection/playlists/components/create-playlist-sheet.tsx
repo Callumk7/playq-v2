@@ -1,4 +1,5 @@
 import { Form } from "react-router";
+import { useAuth } from "~/components/context/auth";
 import { InputWithLabel } from "~/components/forms/inputs";
 import { Button } from "~/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "~/components/ui/sheet";
-import { useSession } from "~/lib/auth/auth-client";
 
 export function CreatePlaylistSheet() {
 	return (
@@ -33,13 +33,14 @@ export function CreatePlaylistSheet() {
 	);
 }
 
-function CreatePlaylistForm() {
-	const session = useSession();
+export function CreatePlaylistForm() {
+	const { user } = useAuth();
+
 	return (
-		<Form method="post">
+		<Form method="POST" action="/collection/playlists?index">
 			<div className="space-y-2 p-2">
 				<InputWithLabel label="Name" id="name" name="name" />
-        <input type="hidden" name="userId" value={session.user.id} />
+        <input type="hidden" name="userId" value={user.id} />
 				<Button type="submit">Create</Button>
 			</div>
 		</Form>

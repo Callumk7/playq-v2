@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Form, useNavigate } from "react-router";
 import { authClient } from "~/lib/auth/auth-client";
 import { AuthContainer } from "./components/container";
+import { InputWithLabel } from "~/components/forms/inputs";
 
 export default function SignUpPage() {
 	const [email, setEmail] = useState("");
@@ -34,24 +35,24 @@ export default function SignUpPage() {
 	return (
     <AuthContainer>
       <Form onSubmit={signup} className="border p-4 rounded-md flex flex-col gap-2">
-        <label htmlFor="email">Email</label>
-        <input
+        <InputWithLabel
+          label="Email"
           id="email"
           type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="border p-1"
         />
-        <label htmlFor="password">Password</label>
-        <input
+        <InputWithLabel
+          label="Password"
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="border p-1"
         />
-        <label htmlFor="name">Name</label>
-        <input
+        <InputWithLabel
+          label="Name"
           id="name"
           type="text"
           value={name}
