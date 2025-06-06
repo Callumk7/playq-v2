@@ -4,8 +4,6 @@ import { CoverImage } from "./base-game-item";
 import { useDeleteGameFromCollection } from "~/db/hooks/collection";
 import { useCollectionStore } from "~/stores/games-collection-store";
 import { useAuth } from "../context/auth";
-import { GameDebug } from "~/tools/game-debug";
-import type { Game } from "~/db/queries/games";
 
 interface CollectionGameProps {
 	coverId: string | null;
@@ -14,17 +12,17 @@ interface CollectionGameProps {
 }
 export function CollectionGame({ coverId, name, gameId }: CollectionGameProps) {
 	const { user } = useAuth();
-  const setSelectedGameId = useCollectionStore((state) => state.setSelectedGameId);
-  const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
+	const setSelectedGameId = useCollectionStore((state) => state.setSelectedGameId);
+	const setIsGameSheetOpen = useCollectionStore((state) => state.setIsGameSheetOpen);
 
-  const handleSelectGame = () => {
-    setSelectedGameId(gameId);
-    setIsGameSheetOpen(true);
-  };
+	const handleSelectGame = () => {
+		setSelectedGameId(gameId);
+		setIsGameSheetOpen(true);
+	};
 
 	const { handleDelete, isDeleting, isDeleted } = useDeleteGameFromCollection({
 		gameId,
-		userId: user.id
+		userId: user.id,
 	});
 
 	const handleDeleteClicked = (e: React.MouseEvent<HTMLButtonElement>) => {

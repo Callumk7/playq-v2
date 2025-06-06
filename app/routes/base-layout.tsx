@@ -20,7 +20,7 @@ import type { Route } from "./+types/base-layout";
 import { AppSidebar } from "~/components/sidebar/app-sidebar";
 import { env } from "~/lib/env";
 import { LocalCache } from "~/lib/cache";
-import { useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useEffect, useMemo } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const session = await getAndValidateSession(request);
@@ -64,21 +64,22 @@ export default function BaseLayout({ loaderData }: Route.ComponentProps) {
 						<BreadcrumbList>
 							{matches.map((match, i) => {
 								if (match.pathname === "/") return null;
+
+								// Only render if there's a breadcrumb
+								if (!match.handle?.breadcrumb) return null;
+
+								// Use a unique key for each match - pathname is usually unique
 								return (
-									<>
-										{match.handle?.breadcrumb ? (
-											<>
-												<BreadcrumbItem key={match.pathname} className="hidden md:block">
-													<BreadcrumbLink asChild>
-														<Link to={match.pathname}>{match.handle.breadcrumb}</Link>
-													</BreadcrumbLink>
-												</BreadcrumbItem>
-												{i !== matches.length - 1 && (
-													<BreadcrumbSeparator className="hidden md:block" />
-												)}
-											</>
-										) : null}
-									</>
+									<Fragment key={match.pathname}>
+										<BreadcrumbItem className="hidden md:block">
+											<BreadcrumbLink asChild>
+												<Link to={match.pathname}>{match.handle.breadcrumb}</Link>
+											</BreadcrumbLink>
+										</BreadcrumbItem>
+										{i !== matches.length - 1 && (
+											<BreadcrumbSeparator className="hidden md:block" />
+										)}
+									</Fragment>
 								);
 							})}
 						</BreadcrumbList>

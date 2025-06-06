@@ -1,4 +1,10 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "~/components/ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+} from "~/components/ui/sheet";
 import type { Playlist } from "~/db/queries/playlist";
 import { Checkbox } from "~/components/ui/checkbox";
 import { useState } from "react";
@@ -16,17 +22,15 @@ export function GameSheet({ playlists }: GameSheetProps) {
 	const selectedGameId = useCollectionStore((state) => state.selectedGameId);
 
 	const { userCollection } = useGameCollectionLoaderData();
-	const selectedGame = userCollection.find((game) => game.id === selectedGameId);
-
-	if (!selectedGame) {
-		return null;
-	}
+	const selectedGame =
+		userCollection.find((game) => game.id === selectedGameId) || userCollection[0];
 
 	return (
 		<Sheet open={isGameSheetOpen} onOpenChange={setIsGameSheetOpen}>
 			<SheetContent>
 				<SheetHeader>
 					<SheetTitle>{selectedGame.name}</SheetTitle>
+					<SheetDescription>{selectedGame.summary}</SheetDescription>
 				</SheetHeader>
 				<div className="p-4 space-y-4">
 					<h2 className="font-semibold text-xl">Playlists</h2>
