@@ -1,3 +1,6 @@
+import { config } from "dotenv";
+
+config();
 
 if (!process.env.IGDB_CLIENT_ID) {
 	throw new Error("IGDB_CLIENT_ID is not defined");
@@ -28,5 +31,5 @@ export const env = {
 	API_GATEWAY_KEY: process.env.API_GATEWAY_KEY,
 	DB_URL: process.env.DB_URL,
 	BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-	BETTER_AUTH_URL: process.env.BETTER_AUTH_URL
-}
+	BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+};

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, useNavigate } from "react-router";
-import { authClient } from "~/lib/auth/auth-client";
+import { authClient, signInWithDiscord } from "~/lib/auth/auth-client";
 import { AuthContainer } from "./components/container";
 import { InputWithLabel } from "~/components/forms/inputs";
 import { Button } from "~/components/ui/button";
@@ -55,6 +55,9 @@ export default function LoginPage() {
 				/>
 				<Button type="submit" disabled={isLoading}>
 					{isLoading ? <RefreshCwIcon className="animate-spin" /> : "Sign in"}
+				</Button>
+				<Button type="button" className="bg-purple-400" onClick={signInWithDiscord}>
+					Sign in with Discord
 				</Button>
 			</Form>
 		</AuthContainer>

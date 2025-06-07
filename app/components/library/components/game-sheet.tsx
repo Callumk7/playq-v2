@@ -22,8 +22,11 @@ export function GameSheet({ playlists }: GameSheetProps) {
 	const selectedGameId = useCollectionStore((state) => state.selectedGameId);
 
 	const { userCollection } = useGameCollectionLoaderData();
-	const selectedGame =
-		userCollection.find((game) => game.id === selectedGameId) || userCollection[0];
+	const selectedGame = userCollection.find((game) => game.id === selectedGameId);
+
+	if (!selectedGame) {
+		return null;
+	}
 
 	return (
 		<Sheet open={isGameSheetOpen} onOpenChange={setIsGameSheetOpen}>

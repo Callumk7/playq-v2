@@ -1,20 +1,16 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-	baseURL: "http:localhost:5173"
+	baseURL: "http:localhost:5173",
 });
 
-export function useSession() {
-	const { data: session, error, isPending } = authClient.useSession();
+export const { signIn, signOut, signUp, useSession, forgetPassword, resetPassword } =
+	authClient;
 
-	if (error) {
-		throw error;
-	}
+export const signInWithDiscord = async () => {
+	const data = await signIn.social({
+		provider: "discord",
+	});
 
-	return { session, isPending };
-}
-
-// Auth context
-
-
-
+	console.log(data.data);
+};
