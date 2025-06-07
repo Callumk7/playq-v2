@@ -1,9 +1,8 @@
 import { LibraryView } from "~/components/library/library-view";
 import { ExploreGame } from "~/components/library/explore-game-item";
 import { MainLayout } from "~/components/layout/main";
-import { GenreNavigation, GenreSelector } from "~/components/library/genre-selector";
+import { GenreNavigation } from "~/components/library/genre-selector";
 import { getAllGenres, getTopGames } from "~/services/igdb.server";
-import { useState } from "react";
 import type { Route } from "./+types/all";
 import { withLoaderLogging } from "~/lib/route-logger.server";
 

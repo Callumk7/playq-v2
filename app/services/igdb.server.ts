@@ -148,6 +148,29 @@ export async function getTopGames() {
 	});
 }
 
+export async function getHypedGames() {
+	const queryBuilder = new QueryBuilder().selectPreset("default");
+	const query = queryBuilder
+		.select(
+			"total_rating",
+			"total_rating_count",
+			"rating_count",
+			"hypes",
+			"first_release_date",
+		)
+		.where("hypes > 50")
+		.where("parent_game = null")
+		.sort("hypes", "desc")
+		.limit(100)
+		.build();
+
+	return await fetchFromIGDB({
+		endpoint: "games",
+		query,
+		schema: IGDBGameSchema.array(),
+	});
+}
+
 export async function getAllGenres() {
 	return await fetchFromIGDB({
 		endpoint: "genres",
