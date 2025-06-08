@@ -15,6 +15,13 @@
       "when": 1744037382915,
       "tag": "0001_open_sir_ram",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749396912535,
+      "tag": "0002_tense_night_thrasher",
+      "breakpoints": true
     }
   ]
 }

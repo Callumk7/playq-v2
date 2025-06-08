@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { parseForm } from "zodix";
 import { db } from "~/db";
@@ -16,7 +16,7 @@ const saveToCollectionSchema = z.object({
 	gameId: z.string(),
 });
 
-const collectionAction = async ({ request }: LoaderFunctionArgs) => {
+const collectionAction = async ({ request }: ActionFunctionArgs) => {
 	// We want to create a join between users and games.
 	const { userId, gameId } = await parseForm(request, saveToCollectionSchema);
 

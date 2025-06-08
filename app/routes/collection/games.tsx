@@ -40,7 +40,6 @@ const collectionGamesAction = async ({ request }: Route.ActionArgs) => {
 export const loader = withLoaderLogging("collection/games", collectionGamesLoader);
 export const action = withActionLogging("collection/games", collectionGamesAction);
 
-// TODO: implement client side search functionality
 export default function CollectionIndexPage({ loaderData }: Route.ComponentProps) {
 	const { userCollection, userPlaylists } = loaderData;
 

@@ -23,6 +23,9 @@ if (!process.env.API_GATEWAY_URL) {
 if (!process.env.API_GATEWAY_KEY) {
 	throw new Error("API_GATEWAY_KEY is not defined");
 }
+if (!process.env.DISCORD_BOT_TOKEN) {
+	throw new Error("DISCORD_BOT_TOKEN is not defined");
+}
 
 export const env = {
 	IGDB_CLIENT_ID: process.env.IGDB_CLIENT_ID,
@@ -32,4 +35,5 @@ export const env = {
 	DB_URL: process.env.DB_URL,
 	BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 	BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+	DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,
 };

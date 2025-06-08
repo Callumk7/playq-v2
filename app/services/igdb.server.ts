@@ -148,6 +148,29 @@ export async function getTopGames() {
 	});
 }
 
+export async function getHypedGames() {
+	const queryBuilder = new QueryBuilder().selectPreset("default");
+	const query = queryBuilder
+		.select(
+			"total_rating",
+			"total_rating_count",
+			"rating_count",
+			"hypes",
+			"first_release_date",
+		)
+		.where("hypes > 50")
+		.where("parent_game = null")
+		.sort("hypes", "desc")
+		.limit(100)
+		.build();
+
+	return await fetchFromIGDB({
+		endpoint: "games",
+		query,
+		schema: IGDBGameSchema.array(),
+	});
+}
+
 export async function getAllGenres() {
 	return await fetchFromIGDB({
 		endpoint: "genres",
@@ -205,4 +228,20 @@ export async function getSearchResults(term: string, page: string | null) {
 		query,
 		schema: IGDBGameSchema.array(),
 	});
+}
+
+export async function getGameIdsFromSteamIds(steamIds: number[]) {
+	const idsAsString = `(${steamIds.join(",")})`;
+	const result = await fetchFromIGDB({
+		endpoint: "external_games",
+		query: `fields game; where uid = ${idsAsString} & external_game_source = 1; limit 100;`,
+		schema: z.array(
+			z.object({
+				id: z.number(),
+				game: z.number(),
+			}),
+		),
+	});
+
+	return result.map((row) => row.game);
 }

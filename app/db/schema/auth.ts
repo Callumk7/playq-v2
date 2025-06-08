@@ -1,4 +1,3 @@
-
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { usersToGames } from "./collection";
@@ -12,12 +11,13 @@ export const user = pgTable("user", {
 	image: text("image"),
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
+	steamId: text("steam_id"),
 });
 
 export const userRelations = relations(user, ({ many }) => ({
 	games: many(usersToGames),
-	playlists: many(playlists)
-}))
+	playlists: many(playlists),
+}));
 
 export const session = pgTable("session", {
 	id: text("id").primaryKey(),
