@@ -9,7 +9,6 @@ const saveGameToCollectionWithSteamIdAction = async ({ request }: ActionFunction
 
 	// Get game data
 	const data = await getGamesFromSteamIds(ids);
-	console.log(data);
 
 	return data;
 };

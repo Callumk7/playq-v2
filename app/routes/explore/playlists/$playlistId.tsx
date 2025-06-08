@@ -8,8 +8,6 @@ import {
 } from "~/db/queries/playlist";
 import { redirect } from "react-router";
 import { LibraryView } from "~/components/library/library-view";
-import type { Route } from "./+types/playlist";
-import { PlaylistMenu } from "./components/playlist-menu";
 import { CollectionGame } from "~/components/library/collection-game-item";
 import { parseForm, zx } from "zodix";
 import { playlistsInsertSchema } from "~/db/schema/playlists";
@@ -21,8 +19,8 @@ import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "~/components/context/auth";
 import { withLoaderLogging, withActionLogging } from "~/lib/route-logger.server";
-import { useSearch } from "~/hooks/use-search";
-import { Input } from "~/components/ui/input";
+import type { Route } from "./+types/$playlistId";
+import { PlaylistMenu } from "~/routes/collection/playlists/components/playlist-menu";
 
 const playlistLoader = async ({ request, params }: Route.LoaderArgs) => {
 	const session = await getAndValidateSession(request);
@@ -86,23 +84,14 @@ export const action = withActionLogging("collection/playlists/playlist", playlis
 export default function PlaylistPage({ loaderData }: Route.ComponentProps) {
 	const { playlist, playlistGames } = loaderData;
 	const session = useAuth();
-
-	const { searchTerm, setSearchTerm, searchedGames } = useSearch(playlistGames || []);
-
 	return (
 		<CommentsLayout
 			commentsSlot={<SampleComments userId={session.user.id} playlistId={playlist.id} />}
 		>
-			<Input
-				type="search"
-				placeholder="Search"
-				className="w-fit"
-				value={searchTerm}
-				onInput={(e) => setSearchTerm(e.currentTarget.value)}
-			/>
 			<PlaylistMenu playlistId={playlist.id} privacySetting={playlist.privacySetting} />
 			<LibraryView>
-				{searchedGames?.map((game) => (
+				{playlistGames?.map((game) => (
+					// TODO: Make a playlist game item component?
 					<CollectionGame
 						key={game.id}
 						gameId={game.id}

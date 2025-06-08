@@ -16,7 +16,11 @@ export default [
 				]),
 				// Most hyped games
 				route("hyped", "./routes/explore/hyped.tsx"),
-				route("playlists", "./routes/explore/playlists.tsx"),
+				route("playlists", "./routes/explore/playlists/index.tsx"),
+				route(
+					"playlists/:playlistId",
+					"./routes/explore/playlists/$playlistId.tsx",
+				),
 			]),
 			route("collection", "./routes/collection/layout.tsx", [
 				route("games", "./routes/collection/games.tsx", { id: "collection" }),

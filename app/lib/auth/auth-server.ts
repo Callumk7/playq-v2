@@ -13,6 +13,11 @@ export const auth = betterAuth({
 		changeEmail: {
 			enabled: true,
 		},
+		additionalFields: {
+			steamId: {
+				type: "string",
+			},
+		},
 	},
 	socialProviders: {
 		discord: {
