@@ -42,7 +42,6 @@ export default [
 		route("collection/:userId", "./routes/api/collection/$userId.ts"),
 		route("playlists", "./routes/api/playlists.ts"),
 		route("playlists/:playlistId", "./routes/api/playlistGames.ts"),
-		route("steam", "./routes/api/steam.ts"),
 	]),
 	route("auth/signup", "./routes/auth/signup.tsx"),
 	route("auth/login", "./routes/auth/login.tsx"),
