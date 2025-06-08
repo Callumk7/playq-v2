@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-	baseURL: "http:localhost:5173",
+	baseURL: "https://playq-v2-production.up.railway.app",
 });
 
 export const { signIn, signOut, signUp, useSession, forgetPassword, resetPassword } =
