@@ -7,13 +7,16 @@ export default [
 		layout("./routes/base-layout.tsx", [
 			index("routes/home.tsx"),
 			route("explore", "./routes/explore/layout.tsx", [
+				// Search for games
 				route("games", "./routes/explore/games.tsx"),
-				route("playlists", "./routes/explore/playlists.tsx"),
+				// Top rated games by genre
 				...prefix("top-rated", [
 					route("all", "./routes/explore/top-rated/all.tsx"),
 					route(":genreId", "./routes/explore/top-rated/$genre.tsx"),
 				]),
+				// Most hyped games
 				route("hyped", "./routes/explore/hyped.tsx"),
+				route("playlists", "./routes/explore/playlists.tsx"),
 			]),
 			route("collection", "./routes/collection/layout.tsx", [
 				route("games", "./routes/collection/games.tsx", { id: "collection" }),
@@ -25,13 +28,17 @@ export default [
 			]),
 			route("games/:gameId", "./routes/games/game.tsx"),
 			route("account", "./routes/account.tsx"),
+			route("discord", "./routes/discord.tsx"),
+			route("steam", "./routes/steam.tsx"),
 		]),
 	]),
 	...prefix("api", [
 		route("auth/*", "./routes/api/auth.ts"),
-		route("collection", "./routes/api/collection.ts"),
+		route("collection", "./routes/api/collection/index.ts"),
+		route("collection/:userId", "./routes/api/collection/$userId.ts"),
 		route("playlists", "./routes/api/playlists.ts"),
 		route("playlists/:playlistId", "./routes/api/playlistGames.ts"),
+		route("steam", "./routes/api/steam.ts"),
 	]),
 	route("auth/signup", "./routes/auth/signup.tsx"),
 	route("auth/login", "./routes/auth/login.tsx"),

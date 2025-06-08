@@ -229,3 +229,19 @@ export async function getSearchResults(term: string, page: string | null) {
 		schema: IGDBGameSchema.array(),
 	});
 }
+
+export async function getGameIdsFromSteamIds(steamIds: number[]) {
+	const idsAsString = `(${steamIds.join(",")})`;
+	const result = await fetchFromIGDB({
+		endpoint: "external_games",
+		query: `fields game; where uid = ${idsAsString} & external_game_source = 1; limit 100;`,
+		schema: z.array(
+			z.object({
+				id: z.number(),
+				game: z.number(),
+			}),
+		),
+	});
+
+	return result.map((row) => row.game);
+}
