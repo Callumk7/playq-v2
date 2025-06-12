@@ -1,6 +1,6 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
-import { games, basicGames, type GamesInsert } from "../schema/games"; // Adjust path as needed
-import { usersToGames } from "../schema/collection"; // Adjust path as needed
+import { desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { games, basicGames, type GamesInsert } from "../schema/games";
+import { usersToGames } from "../schema/collection";
 import { db } from "..";
 
 // Types
@@ -198,5 +198,13 @@ export async function getGamesWithGenres(gameIds: number[]) {
 				with: { genre: true },
 			},
 		},
+	});
+}
+
+export async function getGamesByTotalRating() {
+	return await db.query.games.findMany({
+		where: isNotNull(games.totalRating),
+		orderBy: [desc(games.totalRating)],
+		limit: 25,
 	});
 }

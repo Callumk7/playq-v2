@@ -55,6 +55,7 @@ export default function BaseLayout({ loaderData }: Route.ComponentProps) {
 	const matches = useMatches() as UIMatch<unknown, { breadcrumb: string } | undefined>[];
 	return (
 		<SidebarProvider>
+			<title>playQ: Social Playlists</title>
 			<AppSidebar playlists={userPlaylists} />
 			<SidebarInset>
 				<header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 z-50">
