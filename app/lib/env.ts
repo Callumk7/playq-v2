@@ -8,8 +8,8 @@ if (!process.env.IGDB_CLIENT_ID) {
 if (!process.env.IGDB_BEARER_TOKEN) {
 	throw new Error("IGDB_BEARER_TOKEN is not defined");
 }
-if (!process.env.DB_URL) {
-	throw new Error("DB_URL is not defined");
+if (!process.env.DATABASE_URL) {
+	throw new Error("DATABASE_URL is not defined");
 }
 if (!process.env.BETTER_AUTH_SECRET) {
 	throw new Error("BETTER_AUTH_SECRET is not defined");
@@ -32,7 +32,7 @@ export const env = {
 	IGDB_BEARER_TOKEN: process.env.IGDB_BEARER_TOKEN,
 	API_GATEWAY_URL: process.env.API_GATEWAY_URL,
 	API_GATEWAY_KEY: process.env.API_GATEWAY_KEY,
-	DB_URL: process.env.DB_URL,
+	DATABASE_URL: process.env.DB_URL,
 	BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 	BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
 	DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN,

@@ -5,6 +5,6 @@ import * as collectionSchema from "./schema/collection";
 import * as playlistsSchema from "./schema/playlists";
 import { env } from "~/lib/env";
 
-export const db = drizzle(env.DB_URL, {
+export const db = drizzle(env.DATABASE_URL, {
 	schema: { ...authSchema, ...gamesSchema, ...collectionSchema, ...playlistsSchema },
 });

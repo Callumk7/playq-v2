@@ -1,4 +1,3 @@
-
 import type { Config } from "drizzle-kit";
 
 export default {
@@ -6,6 +5,6 @@ export default {
 	dialect: "postgresql",
 	out: "./drizzle",
 	dbCredentials: {
-		url: process.env.DB_URL!
-	}
+		url: process.env.DATABASE_URL!,
+	},
 } satisfies Config;
