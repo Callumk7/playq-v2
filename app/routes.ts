@@ -37,6 +37,7 @@ export default [
 		]),
 	]),
 	...prefix("api", [
+		route("healthcheck", "./routes/api/healthcheck.ts"),
 		route("auth/*", "./routes/api/auth.ts"),
 		route("collection", "./routes/api/collection/index.ts"),
 		route("collection/:userId", "./routes/api/collection/$userId.ts"),
