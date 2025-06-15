@@ -1,20 +1,29 @@
 {
-    "extends": "./tsconfig.json",
-    "include": [
-        "server.js",
-        "vite.config.ts"
-    ],
-    "compilerOptions": {
-        "composite": true,
-        "strict": true,
-        "types": [
-            "node"
-        ],
-        "lib": [
-            "ES2022"
-        ],
-        "target": "ES2022",
-        "module": "ES2022",
-        "moduleResolution": "bundler"
-    }
+	"extends": "./tsconfig.json",
+	"include": [
+		"server/**/*.ts",
+		"scripts/**/*.ts",
+		"app/db/**/*.ts",
+		"app/lib/env.ts",
+		"app/schema/**/*.ts",
+		"app/services/igdb.server.ts"
+	],
+	"exclude": ["server/app.ts"],
+	"compilerOptions": {
+		"noEmit": false,
+		"outDir": "./build",
+		"rootDir": ".",
+		"composite": true,
+		"strict": true,
+		"types": ["node"],
+		"lib": ["ES2022"],
+		"target": "ES2022",
+		"module": "ES2022",
+		"moduleResolution": "bundler",
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./app/*"],
+			"server/*": ["./server/*"]
+		}
+	}
 }

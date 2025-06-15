@@ -5,11 +5,14 @@
 /.react-router/
 /build/
 
+#Production
+*.tsbuildinfo
+
 # Dev
 .env
 .env.local
 
-/scripts
-
 # AI Stuff
 AGENT.md
+
+/scripts/register-slash-commands.js
