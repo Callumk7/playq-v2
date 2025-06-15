@@ -1,8 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { playlistPermissions, playlists, roleEnum } from "../schema/playlists";
-import { db } from "..";
 import { user } from "../schema/auth";
+import { db } from "../index.server";
 
 // Input validation schemas
 const createPermissionSchema = z.object({

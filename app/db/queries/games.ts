@@ -1,7 +1,7 @@
 import { desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { games, basicGames, type GamesInsert } from "../schema/games";
 import { usersToGames } from "../schema/collection";
-import { db } from "..";
+import { db } from "../index.server";
 
 // Types
 export type Game = typeof games.$inferSelect;
@@ -20,7 +20,8 @@ export async function createGame(data: NewGame): Promise<Game> {
 			createdAt: now,
 			updatedAt: now,
 		})
-		.returning();
+		.returning()
+		.onConflictDoNothing();
 
 	return game;
 }
