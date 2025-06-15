@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { authClient } from "~/lib/auth/auth-client";
 import { withActionLogging, withLoaderLogging } from "~/lib/route-logger.server";
 import { parseForm } from "zodix";
-import { db } from "~/db";
+import { db } from "~/db/index.server";
 import { user, type User } from "~/db/schema/auth";
 import { eq } from "drizzle-orm";
 import { auth } from "~/lib/auth/auth-server";

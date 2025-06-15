@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { parseForm } from "zodix";
-import { db } from "~/db";
+import { db } from "~/db/index.server";
 import { createGame, getGameById } from "~/db/queries/games";
 import { usersToGames } from "~/db/schema/collection";
 import { games } from "~/db/schema/games";
@@ -26,10 +26,9 @@ const collectionAction = async ({ request }: ActionFunctionArgs) => {
 	if (!game) {
 		console.log("Fetching game from IGDB");
 		const gameData = await getFullGame(Number(gameId));
-		console.log(gameData);
 		console.log("Now validating game data for the database..");
 
-		const validGame = validateAndMapGame(gameData[0]);
+		const validGame = validateAndMapGame(gameData);
 		console.log(validGame);
 
 		if (validGame) {
@@ -53,7 +52,7 @@ const collectionAction = async ({ request }: ActionFunctionArgs) => {
 	} else {
 		console.log(`Found game: ${game.name}`);
 		const gameData = await getFullGame(Number(gameId));
-		const validGame = validateAndMapGame(gameData[0]);
+		const validGame = validateAndMapGame(gameData);
 		await db
 			.update(games)
 			.set({ ...validGame, updatedAt: new Date() })
