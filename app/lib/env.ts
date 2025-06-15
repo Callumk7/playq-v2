@@ -22,6 +22,9 @@ if (!process.env.API_GATEWAY_KEY) {
 if (!process.env.DISCORD_BOT_TOKEN) {
 	throw new Error("DISCORD_BOT_TOKEN is not defined");
 }
+if (!process.env.REDIS_URL) {
+	throw new Error("REDIS_URL is not defined");
+}
 
 const redisPort = process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : undefined;
 const redisDB = process.env.REDIS_DB ? Number(process.env.REDIS_DB) : undefined;
@@ -39,4 +42,5 @@ export const env = {
 	REDIS_PORT: redisPort,
 	REDIS_PASSWORD: process.env.REDIS_PASSWORD,
 	REDIS_DB: redisDB,
+	REDIS_URL: process.env.REDIS_URL,
 };
