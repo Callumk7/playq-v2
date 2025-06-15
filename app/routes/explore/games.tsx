@@ -1,12 +1,10 @@
 import type { Route } from "./+types/games";
 import { ExploreGameSearch } from "~/components/explore/search";
 import { LocalCache } from "~/lib/cache";
-import { db } from "~/db";
-import { games, type GamesInsert } from "~/db/schema/games";
 import { SearchResultsTable } from "~/components/explore/search-results-table";
 import { getSearchResults } from "~/services/igdb.server";
-import { validateAndMapGame } from "~/schema/igdb";
 import { withLoaderLogging } from "~/lib/route-logger.server";
+import { addSaveGameJob } from "server/queues";
 
 function getSearchParams(urlString: string) {
 	const url = new URL(urlString);
@@ -25,28 +23,19 @@ let isInitialRequest = true;
 
 const exploreGamesLoader = async ({ request }: Route.LoaderArgs) => {
 	const { search, page } = getSearchParams(request.url);
-	const results = await (search
-		? getSearchResults(search, page)
-		: []);
+	const results = await (search ? getSearchResults(search, page) : []);
 
-  if (results.length === 0) {
-    return [];
-  }
+	if (results.length === 0) {
+		return [];
+	}
 
-  const parsedResults: GamesInsert[] = [];
-  for (const game of results) {
-    try {
-      const parsedGame = validateAndMapGame(game);
-      parsedResults.push(parsedGame);
-    } catch (error) {
-      console.error(`error parsing ${game.id}`);
-      console.error(error);
-    }
-  }
-
-  if (parsedResults.length > 0) {
-    await db.insert(games).values(parsedResults).onConflictDoNothing();
-  }
+	const jobPromises = results.map((game) => addSaveGameJob(game.id, 5));
+	try {
+		await Promise.all(jobPromises);
+		console.log(`Added ${jobPromises.length} save-game jobs to the queue`);
+	} catch (error) {
+		console.error("Failed to add jobs to the queue:", error);
+	}
 
 	return results;
 };
@@ -83,11 +72,11 @@ export default function ExploreGamesPage({ loaderData }: Route.ComponentProps) {
 	return (
 		<div className="p-2 space-y-2">
 			<ExploreGameSearch />
-      <SearchResultsTable games={games} />
+			<SearchResultsTable games={games} />
 		</div>
 	);
 }
 
 export const handle = {
-  breadcrumb: "Games"
-}
+	breadcrumb: "Games",
+};

@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
 import { parseParams } from "zodix";
-import { db } from "~/db";
+import { db } from "~/db/index.server";
 import { createGame, getGameById } from "~/db/queries/games";
 import { usersToGames } from "~/db/schema/collection";
 import { games } from "~/db/schema/games";
@@ -34,7 +34,7 @@ const saveToUserCollectionAction = async ({ request, params }: ActionFunctionArg
 		if (!existingGame) {
 			const gameData = await getFullGame(Number(gameId));
 
-			const validGame = validateAndMapGame(gameData[0]);
+			const validGame = validateAndMapGame(gameData);
 
 			if (validGame) {
 				await createGame(validGame);
@@ -52,12 +52,12 @@ const saveToUserCollectionAction = async ({ request, params }: ActionFunctionArg
 					}
 				}
 			} else {
-				console.log(`Invalid game: ${gameData[0].name}`);
+				console.log(`Invalid game: ${gameData.name}`);
 			}
 		} else {
 			console.log(`Found game: ${existingGame.name}`);
 			const gameData = await getFullGame(gameId);
-			const validGame = validateAndMapGame(gameData[0]);
+			const validGame = validateAndMapGame(gameData);
 			await db
 				.update(games)
 				.set({ ...validGame, updatedAt: new Date() })

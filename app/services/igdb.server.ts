@@ -203,11 +203,13 @@ export async function GetTopGamesByGenre(genreId: number) {
 export async function getFullGame(gameId: number) {
 	const queryBuilder = new QueryBuilder().selectPreset("complete");
 	const query = queryBuilder.where(`id = ${gameId}`).build();
-	return await fetchFromIGDB({
+	const [game] = await fetchFromIGDB({
 		endpoint: "games",
 		query,
 		schema: IGDBGameSchema.array(),
 	});
+
+	return game;
 }
 
 export async function getSearchResults(term: string, page: string | null) {

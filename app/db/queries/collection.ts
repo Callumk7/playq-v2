@@ -1,8 +1,8 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { db } from "..";
 import { usersToGames } from "../schema/collection"; // Adjust path as needed
 import { games } from "../schema/games"; // Adjust path as needed
 import type { Game } from "./games";
+import { db } from "../index.server";
 
 // Types
 export type GameCollection = typeof usersToGames.$inferSelect;

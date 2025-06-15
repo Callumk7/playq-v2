@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { playlists, gamesToPlaylists } from "../schema/playlists";
 import { games } from "../schema/games";
-import { db } from "..";
+import { db } from "../index.server";
 
 // Types
 export type Playlist = typeof playlists.$inferSelect;
